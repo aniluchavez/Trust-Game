@@ -1,0 +1,33 @@
+15.3713 	WARNING 	Import Error: No module named 'psychtoolbox'. Using event module for keyboard component.
+17.6098 	INFO 	Loaded monitor calibration from ['2024_06_21 14:59']
+17.6263 	WARNING 	User requested fullscreen with size [1024  768], but screen is actually [1352, 878]. Using actual size
+17.8665 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, backgroundFit=<method-wrapper '__getattribute__' of attributeSetter object at 0x17920bbe0>, backgroundImage=<method-wrapper '__getattribute__' of attributeSetter object at 0x17920bb80>, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x17920b9d0>, gamma=None, gammaErrorPolicy='raise', infoMsg=UNKNOWN, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x179389180>, multiSample=False, name='window1', numSamples=2, pos=[np.float64(338.0), np.float64(219.5)], screen=0, size=array([2704, 1756]), stencilBits=0, stereo=False, title='PsychoPy', units='height', useFBO=True, useRetina=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+17.8666 	EXP 	window1: backgroundImage = ''
+17.8666 	EXP 	window1: backgroundFit = 'none'
+17.8667 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.8668 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.8784 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.8788 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.9029 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.9030 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.9033 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.9036 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x17920bd00>
+17.9133 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+17.9134 	EXP 	window1: recordFrameIntervals = False
+18.0287 	EXP 	window1: recordFrameIntervals = True
+18.9683 	WARNING 	Couldn't measure a consistent frame rate!
+  - Is your graphics card set to sync to vertical blank?
+  - Are you running other processes on your computer?
+
+18.9697 	EXP 	window1: mouseVisible = False
+25.0675 	INFO 	keyboard.Keyboard is using iohub backend.
+25.0676 	EXP 	untitled: status = STARTED
+25.0679 	EXP 	window1: mouseVisible = False
+25.3135 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+0.0617 	WARNING 	t of last frame was 52.70ms (=1/18)
+0.0617 	EXP 	text: autoDraw = True
+1.0203 	EXP 	text: autoDraw = False
+1.0204 	EXP 	untitled: status = STOPPED
+1.0241 	INFO 	saved data to '/Users/aniluchavez/Documents/GitHub/Scratch/Code/data/418383_untitled_2024-10-22_13h41.36.039.csv'
+1.0251 	INFO 	saved data to /Users/aniluchavez/Documents/GitHub/Scratch/Code/data/418383_untitled_2024-10-22_13h41.36.039.psydat
+1.0460 	EXP 	window1: mouseVisible = True

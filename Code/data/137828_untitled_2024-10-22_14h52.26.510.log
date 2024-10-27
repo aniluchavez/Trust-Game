@@ -1,0 +1,129 @@
+17.6483 	WARNING 	Import Error: No module named 'psychtoolbox'. Using event module for keyboard component.
+19.9676 	INFO 	Loaded monitor calibration from ['2024_06_21 14:59']
+19.9890 	WARNING 	User requested fullscreen with size [1024  768], but screen is actually [1352, 878]. Using actual size
+20.2333 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, backgroundFit=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a3776d0>, backgroundImage=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a377670>, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a3774c0>, gamma=None, gammaErrorPolicy='raise', infoMsg=UNKNOWN, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x31a22cc70>, multiSample=False, name='window1', numSamples=2, pos=[np.float64(338.0), np.float64(219.5)], screen=0, size=array([2704, 1756]), stencilBits=0, stereo=False, title='PsychoPy', units='height', useFBO=True, useRetina=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+20.2334 	EXP 	window1: backgroundImage = ''
+20.2334 	EXP 	window1: backgroundFit = 'none'
+20.2335 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2336 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2440 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2444 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2676 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2677 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2681 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2684 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a3777f0>
+20.2781 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+20.2781 	EXP 	window1: recordFrameIntervals = False
+20.4094 	EXP 	window1: recordFrameIntervals = True
+20.5109 	WARNING 	t of last frame was 21.06ms (=1/47)
+21.0450 	WARNING 	t of last frame was 22.13ms (=1/45)
+21.0727 	WARNING 	t of last frame was 27.69ms (=1/36)
+21.0943 	WARNING 	t of last frame was 21.62ms (=1/46)
+21.3762 	WARNING 	Multiple dropped frames have occurred - I'll stop bothering you about them!
+21.4834 	WARNING 	Couldn't measure a consistent frame rate!
+  - Is your graphics card set to sync to vertical blank?
+  - Are you running other processes on your computer?
+
+21.4843 	EXP 	window1: mouseVisible = False
+27.4896 	INFO 	keyboard.Keyboard is using iohub backend.
+27.4897 	EXP 	untitled: status = STARTED
+27.4900 	EXP 	window1: mouseVisible = False
+27.5422 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+27.5546 	EXP 	window1: mouseVisible = False
+27.5560 	EXP 	window1: mouseVisible = False
+27.5614 	EXP 	window1: mouseVisible = False
+27.5646 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+27.5647 	EXP 	window1: mouseVisible = False
+27.5664 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+27.5676 	EXP 	window1: mouseVisible = False
+27.5685 	EXP 	window1: mouseVisible = False
+27.5693 	EXP 	window1: mouseVisible = False
+27.5723 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+27.5724 	EXP 	window1: mouseVisible = False
+27.5740 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+27.5751 	EXP 	window1: mouseVisible = False
+27.5761 	EXP 	window1: mouseVisible = False
+27.5769 	EXP 	window1: mouseVisible = False
+27.5801 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+27.5802 	EXP 	window1: mouseVisible = False
+27.5818 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+27.5830 	EXP 	window1: mouseVisible = False
+27.5839 	EXP 	window1: mouseVisible = False
+27.5847 	EXP 	window1: mouseVisible = False
+27.5877 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: contrast = 1.0
+0.0090 	EXP 	slider: markerPos = None
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: contrast = 1.0
+0.0090 	EXP 	slider: markerPos = None
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: contrast = 1.0
+0.0090 	EXP 	slider: markerPos = None
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: autoLog = True
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = []
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0090 	EXP 	slider: contrast = 1.0
+0.0090 	EXP 	slider: markerPos = None
+0.0090 	EXP 	slider: autoLog = True
+0.0094 	EXP 	New trial (rep=0, index=0): <Trial 0 (0 in rep 0) data={'thisN': 0, 'thisTrialN': 0, 'thisRepN': 0}>
+0.0240 	EXP 	slider: markerPos = None
+0.0240 	EXP 	slider: markerPos = None
+0.0240 	EXP 	text: autoDraw = True
+0.0240 	EXP 	slider: autoDraw = True
+1.0118 	EXP 	text: autoDraw = False
+6.4568 	DATA 	Mouse: Left button down, pos=(1170,693)
+6.6246 	DATA 	Mouse:  Left button up, pos=(1170,693)
+6.8138 	DATA 	Mouse: Right button down, pos=(1164,693)
+7.2322 	DATA 	Mouse:  Right button up, pos=(873,652)
+7.5784 	DATA 	Keypress: space
+8.5422 	DATA 	Keypress: right
+8.8675 	DATA 	Keypress: down
+9.8439 	DATA 	Mouse: Left button down, pos=(714,444)
+10.4156 	DATA 	Mouse:  Left button up, pos=(1345,624)
+10.6588 	DATA 	Mouse: wheel shift=(0,0), pos=(1322,623)
+10.6821 	DATA 	Mouse: Right button down, pos=(1322,623)
+10.6952 	DATA 	Mouse: wheel shift=(0,0), pos=(1322,623)
+11.0768 	DATA 	Mouse:  Right button up, pos=(1193,643)
+19.3333 	DATA 	Mouse: wheel shift=(0,0), pos=(1157,521)
+19.3699 	DATA 	Mouse: Right button down, pos=(1157,521)
+19.3862 	DATA 	Mouse: wheel shift=(0,0), pos=(1157,521)
+20.0262 	DATA 	Mouse:  Right button up, pos=(1351,602)
+21.0749 	DATA 	Mouse: wheel shift=(0,0), pos=(1198,509)
+21.1789 	DATA 	Mouse: Right button down, pos=(1198,509)
+21.1794 	DATA 	Mouse: wheel shift=(0,0), pos=(1198,509)
+22.4004 	DATA 	Mouse:  Right button up, pos=(950,457)
+22.4758 	DATA 	Mouse: wheel shift=(0,0), pos=(950,457)
+22.4964 	DATA 	Mouse: wheel shift=(0,0), pos=(950,457)
+22.7543 	DATA 	Mouse: wheel shift=(0,0), pos=(950,457)
+22.8931 	DATA 	Mouse: Right button down, pos=(950,457)
+22.9112 	DATA 	Mouse: wheel shift=(0,0), pos=(950,457)
+23.5570 	DATA 	Mouse:  Right button up, pos=(881,458)
+24.6218 	DATA 	Mouse: wheel shift=(0,0), pos=(1296,374)
+24.6995 	DATA 	Mouse: Right button down, pos=(1296,374)
+24.7129 	DATA 	Mouse: wheel shift=(0,0), pos=(1296,374)
+25.4174 	DATA 	Mouse:  Right button up, pos=(1299,366)
+26.1619 	DATA 	Keypress: escape
+26.2214 	EXP 	untitled: status = STOPPED
+26.2257 	EXP 	slider: autoDraw = False
+26.2257 	EXP 	untitled: status = STOPPED
+26.2282 	INFO 	saved data to '/Users/aniluchavez/Documents/GitHub/Scratch/Code/data/137828_untitled_2024-10-22_14h52.26.510.csv'
+26.2290 	INFO 	saved data to /Users/aniluchavez/Documents/GitHub/Scratch/Code/data/137828_untitled_2024-10-22_14h52.26.510.psydat
+26.2572 	EXP 	window1: mouseVisible = True

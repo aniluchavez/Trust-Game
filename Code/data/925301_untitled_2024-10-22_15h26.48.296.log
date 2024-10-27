@@ -1,0 +1,213 @@
+27.2535 	WARNING 	Import Error: No module named 'psychtoolbox'. Using event module for keyboard component.
+30.7854 	INFO 	Loaded monitor calibration from ['2024_06_21 14:59']
+30.7977 	WARNING 	User requested fullscreen with size [1024  768], but screen is actually [1352, 878]. Using actual size
+31.0370 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, backgroundFit=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a693b20>, backgroundImage=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a693ac0>, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x31a693910>, gamma=None, gammaErrorPolicy='raise', infoMsg=UNKNOWN, lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x31a5190c0>, multiSample=False, name='window1', numSamples=2, pos=[np.float64(338.0), np.float64(219.5)], screen=0, size=array([2704, 1756]), stencilBits=0, stereo=False, title='PsychoPy', units='height', useFBO=True, useRetina=True, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+31.0370 	EXP 	window1: backgroundImage = ''
+31.0370 	EXP 	window1: backgroundFit = 'none'
+31.0372 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0373 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0449 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0453 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0688 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0689 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0693 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0696 	EXP 	window1: mouseVisible = <method-wrapper '__getattribute__' of attributeSetter object at 0x31a693c40>
+31.0796 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+31.0796 	EXP 	window1: recordFrameIntervals = False
+31.1957 	EXP 	window1: recordFrameIntervals = True
+31.3667 	WARNING 	t of last frame was 21.57ms (=1/46)
+32.1375 	WARNING 	Couldn't measure a consistent frame rate!
+  - Is your graphics card set to sync to vertical blank?
+  - Are you running other processes on your computer?
+
+32.1384 	EXP 	window1: mouseVisible = False
+38.0400 	INFO 	keyboard.Keyboard is using iohub backend.
+38.0400 	EXP 	untitled: status = STARTED
+38.0404 	EXP 	window1: mouseVisible = False
+38.0964 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+38.1086 	EXP 	window1: mouseVisible = False
+38.1100 	EXP 	window1: mouseVisible = False
+38.1136 	EXP 	window1: mouseVisible = False
+38.1168 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+38.1169 	EXP 	window1: mouseVisible = False
+38.1186 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+38.1198 	EXP 	window1: mouseVisible = False
+38.1208 	EXP 	window1: mouseVisible = False
+38.1216 	EXP 	window1: mouseVisible = False
+38.1246 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+38.1247 	EXP 	window1: mouseVisible = False
+38.1263 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+38.1274 	EXP 	window1: mouseVisible = False
+38.1282 	EXP 	window1: mouseVisible = False
+38.1290 	EXP 	window1: mouseVisible = False
+38.1322 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+38.1323 	EXP 	window1: mouseVisible = False
+38.1338 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, draggable=False, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=np.float64(0.05000000000000001), italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Hello welcome to X experiment\n', units='height', win=Window(...), wrapWidth=1)
+38.1349 	EXP 	window1: mouseVisible = False
+38.1359 	EXP 	window1: mouseVisible = False
+38.1367 	EXP 	window1: mouseVisible = False
+38.1398 	EXP 	Created slider = Slider(__class__=<class 'psychopy.visual.slider.Slider'>, autoDraw=False, autoLog=True, borderColor=None, color=None, colorSpace='rgb', depth=-1, fillColor=None, flip=False, font='Open Sans', granularity=0.0, labelColor=None, labelHeight=np.float64(0.05000000000000001), labelWrapWidth=None, labels=None, lineColor=None, markerColor=None, name='slider', opacity=None, ori=0.0, pos=array([ 0. , -0.4]), readOnly=False, self=UNKNOWN, size=array([1. , 0.1]), startValue=None, style='rating', styleTweaks=['triangleMarker'], ticks=array([1, 2, 3, 4, 5]), units='height', win=Window(...))
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: contrast = 1.0
+0.0106 	EXP 	slider: markerPos = None
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: contrast = 1.0
+0.0106 	EXP 	slider: markerPos = None
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: contrast = 1.0
+0.0106 	EXP 	slider: markerPos = None
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: autoLog = True
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = []
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: styleTweaks = ['triangleMarker']
+0.0106 	EXP 	slider: contrast = 1.0
+0.0106 	EXP 	slider: markerPos = None
+0.0106 	EXP 	slider: autoLog = True
+0.0110 	EXP 	New trial (rep=0, index=0): <Trial 0 (0 in rep 0) data={'thisN': 0, 'thisTrialN': 0, 'thisRepN': 0}>
+0.0348 	WARNING 	t of last frame was 24.16ms (=1/41)
+0.0348 	EXP 	slider: markerPos = None
+0.0348 	EXP 	slider: markerPos = None
+0.0348 	EXP 	text: autoDraw = True
+0.0348 	EXP 	slider: autoDraw = True
+1.0261 	EXP 	text: autoDraw = False
+1.0652 	WARNING 	t of last frame was 20.83ms (=1/48)
+1.8252 	DATA 	Mouse: wheel shift=(0,0), pos=(1183,165)
+1.8497 	DATA 	Mouse: Right button down, pos=(1183,165)
+1.8690 	DATA 	Mouse: wheel shift=(0,0), pos=(1183,165)
+2.5166 	DATA 	Mouse:  Right button up, pos=(1351,84)
+2.5915 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.5920 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6125 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+2.6169 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+2.6200 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6358 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6494 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6535 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6661 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6696 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.6861 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7038 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7273 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7402 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7584 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7648 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7958 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.7994 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.8156 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.8366 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.8495 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.8692 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.8871 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9039 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9232 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9415 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9491 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9661 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9697 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+2.9870 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0032 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.0252 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0317 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0490 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0530 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0691 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.0869 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1106 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1249 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1322 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1492 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.1692 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1694 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1728 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.1875 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.2077 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.2121 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.2326 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.2457 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.2624 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.2830 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.2875 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.3071 	DATA 	Mouse: wheel shift=(-2,0), pos=(1351,84)
+3.3276 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.3459 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.3529 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.3688 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.3834 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.3871 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.4077 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.4114 	DATA 	Mouse: wheel shift=(-1,0), pos=(1351,84)
+3.4274 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.4456 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.4462 	DATA 	Mouse: wheel shift=(0,0), pos=(1351,84)
+3.5046 	DATA 	Mouse: Left button down, pos=(1351,84)
+3.7411 	DATA 	Mouse:  Left button up, pos=(1351,84)
+3.9502 	DATA 	Mouse: Right button down, pos=(1351,84)
+4.4069 	DATA 	Mouse:  Right button up, pos=(888,0)
+4.5905 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6122 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6164 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6365 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6583 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6651 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6812 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6956 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.6997 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7030 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7188 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7320 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7351 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7508 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7527 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7705 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.7939 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8086 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8151 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8315 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8456 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8498 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8688 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.8830 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9001 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9191 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9371 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9628 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9774 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9817 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+4.9989 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+5.0158 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+5.0328 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+5.0499 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+5.0709 	DATA 	Mouse: wheel shift=(0,0), pos=(1044,33)
+5.2109 	DATA 	Mouse: Right button down, pos=(1044,33)
+5.5909 	DATA 	Mouse:  Right button up, pos=(1189,13)
+5.7595 	DATA 	Mouse: Right button down, pos=(1196,12)
+5.9530 	DATA 	Mouse:  Right button up, pos=(1196,12)
+6.0760 	DATA 	Mouse: Right button down, pos=(1196,12)
+6.1878 	DATA 	Mouse:  Right button up, pos=(1196,12)
+6.3469 	DATA 	Mouse: Right button down, pos=(1196,12)
+6.4283 	DATA 	Mouse:  Right button up, pos=(1186,13)
+8.1213 	WARNING 	t of last frame was 48.12ms (=1/20)
+8.1724 	DATA 	Keypress: escape
+8.1763 	WARNING 	Multiple dropped frames have occurred - I'll stop bothering you about them!
+8.2402 	EXP 	untitled: status = STOPPED
+8.2521 	EXP 	slider: autoDraw = False
+8.2521 	EXP 	untitled: status = STOPPED
+8.2559 	INFO 	saved data to '/Users/aniluchavez/Documents/GitHub/Scratch/Code/data/925301_untitled_2024-10-22_15h26.48.296.csv'
+8.2567 	INFO 	saved data to /Users/aniluchavez/Documents/GitHub/Scratch/Code/data/925301_untitled_2024-10-22_15h26.48.296.psydat
+8.2774 	EXP 	window1: mouseVisible = True
