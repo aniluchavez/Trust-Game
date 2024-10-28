@@ -1,94 +1,79 @@
-import pandas as pd
-from psychopy import visual, core
-from Class.game_logic import GameLogic
+from psychopy import core, visual
 from markEvent import markEvent
-from Code.trial import TrustGameTrial  # Assuming the trial script is named trial.py
-import Code.globals as glb
-import random
+from trial import TrustGameTrial
+from Class.game_logic import GameLogic
+from stimuli import load_partner_image
+import globals as glb
 
-def run_experiment(TaskVars, PARAMETERS):
+def run_experiment():
     """
-    Main function to run the experiment. Initializes blocks and trials, assigns roles, and saves data.
-    
-    Parameters:
-    ----------
-    TaskVars : dict
-        A dictionary containing prompts and experimental conditions.
-    PARAMETERS : dict
-        A dictionary containing experimental settings, including block and trial information.
+    Main function to run the trust game experiment.
+    Initializes game logic, displays intro, and loops through trials in each block.
     """
-    # Initialize PsychoPy window
-    UI_WIN = visual.Window([1024, 768], fullscr=False, units='pix')
-    all_data = []  # Collect data for the entire experiment
-    
+    PARAMETERS = glb.PARAMETERS  # Access PARAMETERS from globals
+    UI_WIN = PARAMETERS.create_window()
+    all_data = []  # To store data across all trials
+
     # Mark the start of the experiment
-    markEvent("taskStart")
-    
-    # Loop through each block
-    for blockIdx in range(PARAMETERS['exp']['numBlocks']):
-        block_data = []
-        prompts = TaskVars['prompts']
+    markEvent("taskStart", PARAMETERS=PARAMETERS)
+
+    # Main loop through blocks in PARAMETERS
+    for block_idx, block in enumerate(PARAMETERS.blocks):
+    # Set roles from block settings or defaults
+        user_role = block.get('user_role', 'trustor')
+        cpu_role = block.get('cpu_role', 'trustee')
         
-        # Shuffle prompts at the start of each block
-        random.shuffle(prompts)
+        # Initialize GameLogic for the block
+        game_logic = GameLogic(
+            PARAMETERS=PARAMETERS,
+            trustworthiness=block['trustworthiness'],
+            initial_money=1
+        )
 
-        # Assign roles based on block configuration (e.g., alternate trustor and trustee roles)
-        user_role = 'trustor' if blockIdx % 2 == 0 else 'trustee'
-        cpu_role = 'trustee' if user_role == 'trustor' else 'trustor'
+        # Load partner image for the block
+        partner_image = load_partner_image(UI_WIN, PARAMETERS.stimuli['imageFolder'])
 
-        # Mark the start of the block
-        markEvent('blockStart', blockIdx + 1)
-        
-        # Initialize game logic with the current role setup and parameters
-        game_logic = GameLogic(UI_WIN, trustworthiness='trustworthy', initial_money=3)
+        # Initialize trial with specified roles
+        trial = TrustGameTrial(
+            UI_WIN=UI_WIN,
+            PARAMETERS=PARAMETERS,
+            partner_name=block['name'],
+            game_logic=game_logic,
+            user_role=user_role,
+            cpu_role=cpu_role,
+            trialIdx=0,
+            blockIdx=block_idx,
+            partner_image=partner_image
+        )
 
-        # Loop through each trial within the block
-        for trialIdx in range(PARAMETERS['block']['numTrials']):
-            # Create and run trial
-            trial = TrustGameTrial(
-                UI_WIN=UI_WIN,
-                PARAMETERS=PARAMETERS,
-                partner_name="Chris Thompson",  # Example partner name
-                partner_image_folder="/path/to/images",
-                num_images=1,
-                game_logic=game_logic,
-                user_role=user_role,
-                cpu_role=cpu_role,
-                trialIdx=trialIdx,
-                blockIdx=blockIdx
-            )
-            outcome = trial.run_trial()
-
-            # Collect trial data
-            trial_data = {
-                'Trial Index': trialIdx,
-                'Block Index': blockIdx,
-                'User Role': user_role,
-                'Outcome': outcome,  # The outcome returned from trial
-                'Prompt': prompts[trialIdx]
-            }
+    # Run block introduction and trials
+        trial.show_intro()
+        for trial_idx in range(block['num_trials']):
+            trial.trialIdx = trial_idx
+            trial_data = trial.run_trial()
             all_data.append(trial_data)
-            block_data.append(trial_data)
-
-            # Check if the trial or block was aborted
-            if outcome.get('Abort'):
-                break
-        
-        # Save block data to a separate file
-        pd.DataFrame(block_data).to_excel(PARAMETERS['outputDir'] + f'Block_{blockIdx + 1}.xlsx')
-        
-        # Mark the end of the block
-        markEvent('blockEnd', blockIdx + 1)
-        
-        # Exit experiment if an abort was triggered during the block
-        if outcome.get('Abort'):
-            markEvent("taskAbort")
-            break
-
-    # Save all experiment data after completing all blocks
-    pd.DataFrame(all_data).to_excel(PARAMETERS['outputDir'] + 'Behavioral_Data.xlsx')
 
     # Mark the end of the experiment
-    markEvent("taskStop")
-    UI_WIN.close()
-    core.quit()
+    markEvent("taskStop", PARAMETERS=PARAMETERS)
+
+    # Save all collected data at the end
+    save_data(all_data)
+
+def save_data(data_records, filename="experiment_data"):
+    """
+    Save experiment data to a CSV file.
+
+    Parameters:
+    ----------
+    data_records : list of dict
+        Collected data for each trial.
+    filename : str
+        Base filename for saving data.
+    """
+    import csv, os
+    filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
+
+    with open(filepath, 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
+        writer.writeheader()
+        writer.writerows(data_records)

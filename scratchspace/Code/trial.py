@@ -1,12 +1,33 @@
-from psychopy import core, event
-from stimuli import create_general_stimuli, create_text_stimuli
-from Class.game_logic import GameLogic
+from psychopy import visual, core, event
+from stimuli import create_text_stimuli, create_button
+import globals as glb
 from markEvent import markEvent
 
 class TrustGameTrial:
-    def __init__(self, UI_WIN, PARAMETERS, partner_name, partner_image_folder, num_images, game_logic, user_role, cpu_role, trialIdx, blockIdx):
+    def __init__(self, UI_WIN, PARAMETERS, partner_name, game_logic, user_role="trustor", cpu_role="trustee", trialIdx=0, blockIdx=0, partner_image=None):
         """
-        Initialize a trial in the trust game, specifying trial and block indices.
+        Initialize a trial in the trust game with flexibility for user and CPU roles.
+
+        Parameters:
+        ----------
+        UI_WIN : psychopy.visual.Window
+            The PsychoPy window object.
+        PARAMETERS : Parameters
+            Experiment-wide settings and display parameters.
+        partner_name : str
+            Name of the partner (CPU).
+        game_logic : GameLogic
+            Instance of the game logic.
+        user_role : str, optional
+            Role of the user, defaults to 'trustor'.
+        cpu_role : str, optional
+            Role of the CPU, defaults to 'trustee'.
+        trialIdx : int
+            Index of the trial within the block.
+        blockIdx : int
+            Index of the block.
+        partner_image : ImageStim, optional
+            Partner image to display, defaults to None.
         """
         self.UI_WIN = UI_WIN
         self.PARAMETERS = PARAMETERS
@@ -16,139 +37,71 @@ class TrustGameTrial:
         self.cpu_role = cpu_role
         self.trialIdx = trialIdx
         self.blockIdx = blockIdx
-        self.trial_data = []  # Collects data for this trial
+        self.partner_image = partner_image
 
-        # Dynamic button labels based on trustor's current money amount
+        # Button labels update dynamically based on trustor money
         self.button_labels = [f"Keep ${self.game_logic.trustor_money}", f"Give ${self.game_logic.trustor_money * 3}"]
 
-        # Generate stimuli
-        self.stimuli = create_general_stimuli(
-            UI_WIN=UI_WIN,
-            folder_path=partner_image_folder,
-            num_images=num_images,
-            PARAMETERS=PARAMETERS,
-            button_labels=self.button_labels,
-            overlay_text=f"Welcome to the game"
+        # Setup stimuli for the trial
+        self.setup_stimuli()
+
+    def setup_stimuli(self):
+        """Set up visual components for the trial."""
+        self.partner_name_text = create_text_stimuli(
+            self.UI_WIN,
+            self.PARAMETERS,
+            text_content=f"Partner: {self.partner_name}",
+            pos=(0, 0.7)
         )
-        
-        self.partner_name_text = create_text_stimuli(UI_WIN, PARAMETERS, self.partner_name)
-        
-    def log_event(self, event_name, data=None):
-        """
-        Logs the event with optional data and timing.
-        """
-        event_time = core.getTime()
-        self.trial_data.append({
-            'TrialIdx': self.trialIdx,
-            'BlockIdx': self.blockIdx,
-            'Event': event_name,
-            'Data': data,
-            'Time': event_time
-        })
-        
-    def decision_phase(self):
-        """
-        Decision phase with event marking and data logging.
-        """
-        markEvent('DecisionStart', self.trialIdx + 1)
-        self.log_event('DecisionPhaseStart')
+        self.keep_button = create_button(self.UI_WIN, label=self.button_labels[0], pos=(-0.4, -0.5))
+        self.give_button = create_button(self.UI_WIN, label=self.button_labels[1], pos=(0.4, -0.5))
 
-        # Decision for user as trustor
-        if self.user_role == 'trustor':
-            self.stimuli['images'][0].draw()  # Show partner image
-            self.partner_name_text.draw()
-            for button in self.stimuli['buttons']:
-                button.draw()
-            self.UI_WIN.flip()
-            
-            clock = core.Clock()
-            decision_made = False
-            while clock.getTime() < 3 and not decision_made:
-                keys = event.getKeys(['escape'])
-                if 'escape' in keys:
-                    core.quit()
-                if self.stimuli['buttons'][0].isClicked:
-                    self.participant_decision = 'keep'
-                    self.game_logic.trustor_decision = 'keep'
-                    markEvent("UserChoice", "keep")
-                    self.log_event("UserDecision", "keep")
-                    self.log_event("UserDecisionTime", clock.getTime())
-                    decision_made = True
-                elif self.stimuli['buttons'][1].isClicked:
-                    self.participant_decision = 'give'
-                    self.game_logic.trustor_decision = 'give'
-                    markEvent("UserChoice", "give")
-                    self.log_event("UserDecision", "give")
-                    self.log_event("UserDecisionTime", clock.getTime())
-                    decision_made = True
-            
-            if not decision_made:
-                self.participant_decision = 'keep'
-                markEvent("UserChoice", "keep (default)")
-                self.log_event("UserDecision", "keep (default)")
-                
-        elif self.cpu_role == 'trustor':
-            self.participant_decision = self.game_logic.cpu_trustor_decision()
-            markEvent("OtherChoice", self.participant_decision)
-            self.log_event("CPUDecision", self.participant_decision)
-            core.wait(1)  # Simulate decision time
-
-        markEvent('DecisionEnd', self.trialIdx + 1)
-        self.log_event("DecisionPhaseEnd")
+    def show_intro(self):
+        """Display introductory screen with partner's name and image."""
+        self.partner_image.draw()
+        self.partner_name_text.draw()
         self.UI_WIN.flip()
-
-    def interval_phase(self):
-        """
-        Interval phase with event marking.
-        """
-        markEvent('intervalPhaseStart', self.trialIdx + 1)
-        self.log_event("IntervalPhaseStart")
-        core.wait(12)  # Interval time
-        markEvent('intervalPhaseEnd', self.trialIdx + 1)
-        self.log_event("IntervalPhaseEnd")
-
-    def outcome_phase(self):
-        """
-        Outcome phase with event marking and data logging.
-        """
-        markEvent('OutcomeStart', self.trialIdx + 1)
-        self.log_event("OutcomePhaseStart")
-
-        if self.user_role == 'trustee':
-            returned_amount = self.game_logic.trustee_decision()
-            self.log_event("UserOutcome", f"Received ${returned_amount}")
-        elif self.cpu_role == 'trustee':
-            returned_amount = self.game_logic.cpu_trustee_decision()
-            self.log_event("CPUOutcome", f"Returned ${returned_amount}")
-        
-        if self.participant_decision == 'keep':
-            outcome_text = "You decided to keep the money."
-            self.log_event("UserOutcome", "Kept the money")
-        elif returned_amount == 0:
-            outcome_text = f"{self.partner_name} kept the money."
-            self.log_event("CPUOutcome", "Kept all money")
-        else:
-            outcome_text = f"{self.partner_name} shared ${returned_amount} with you."
-            self.log_event("CPUOutcome", f"Shared ${returned_amount}")
-
-        outcome_stim = create_text_stimuli(self.UI_WIN, self.PARAMETERS, outcome_text)
-        outcome_stim.draw()
-        self.UI_WIN.flip()
-        
-        markEvent('OutcomeEnd', self.trialIdx + 1)
-        self.log_event("OutcomePhaseEnd")
-        core.wait(1)
+        core.wait(2)
 
     def run_trial(self):
-        """
-        Run the full trial with phases and data logging.
-        """
-        markEvent('trialStart', self.trialIdx + 1, self.blockIdx + 1)
-        self.log_event("TrialStart")
-        self.decision_phase()
-        self.interval_phase()
-        self.outcome_phase()
-        markEvent('trialEnd', self.trialIdx + 1, self.blockIdx + 1)
-        self.log_event("TrialEnd")
+        """Run the decision and outcome phases and log user and CPU actions."""
+        glb.reset_clock()
+        markEvent("trialStart", trialIdx=self.trialIdx, blockIdx=self.blockIdx)
+
+        # Decision Phase
+        self.partner_image.draw()
+        self.partner_name_text.draw()
+        self.keep_button[0].draw()
+        self.keep_button[1].draw()
+        self.give_button[0].draw()
+        self.give_button[1].draw()
+        self.UI_WIN.flip()
+
+        keys = event.waitKeys(keyList=['1', '3', 'escape'])
+        if 'escape' in keys:
+            core.quit()
+        decision = 'keep' if '1' in keys else 'give'
+
+        # Log decision
+        amount_given = self.game_logic.trustor_decision(decision)
+        user_decision = {"choice": decision, "amount": amount_given if decision == 'give' else self.game_logic.trustor_money}
         
-        return self.trial_data  # Return all data collected in this trial
+        decision_time = glb.ABS_CLOCK.getTime()
+        markEvent("UserChoice", role=self.user_role, decision=user_decision, time=decision_time)
+
+        # Outcome Phase
+        returned_amount = self.game_logic.outcome_phase(amount_given)
+        cpu_response = {"choice": "return", "amount": returned_amount} if returned_amount > 0 else {"choice": "keep", "amount": 0}
+
+        outcome_time = glb.ABS_CLOCK.getTime()
+        markEvent("OutcomeEnd", returned_amount=returned_amount, time=outcome_time)
+
+        trial_data = {
+            "trialIdx": self.trialIdx,
+            "blockIdx": self.blockIdx,
+            "user_decision": user_decision,
+            "cpu_response": cpu_response,
+            "decision_time": decision_time,
+            "outcome_time": outcome_time
+        }
+        return trial_data

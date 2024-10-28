@@ -1,78 +1,49 @@
-from psychopy import locale_setup, prefs, core, gui, visual, data, clock, hardware
-from psychopy.tools import environmenttools
-from numpy.random import randint
+# globals.py
+from psychopy import core, prefs
 import os
+from parameters import Parameters 
 
 # --- Set hardware preferences ---
 prefs.hardware['audioLib'] = ['sounddevice', 'pygame']
 prefs.hardware['audioLatencyMode'] = '3'
+PARAMETERS=Parameters()
+# --- Experiment Settings ---
+EXPERIMENT_NAME = "Trust Game Experiment"
+DATA_PATH = os.path.join(os.getcwd(), "data")  # Path to save data files
 
-# ParameterClass for experiment settings, you can also create more parameters outside in a different file @George this is similar
-# to your parameterclass.py. Define parameters here please. Shouldn't be too many for the time beings
-class ParameterClass:
-    def __init__(self):
-        self.screen = {'number': 1, 'bgColor': [0, 0, 0]}
-        self.text = {'font': 'Arial', 'size': 24, 'color': [255, 255, 255]}
-        self.window = {'size': [1024, 768], 'fullscr': False, 'units': 'pix'}
+# Ensure data path exists
+if not os.path.exists(DATA_PATH):
+    os.makedirs(DATA_PATH)
 
-# --- Create global variables ---
-def create_globals():
-    global PARAMETERS
-    PARAMETERS = ParameterClass()  # Load all parameters in a single class
+# --- Global Experiment Clock ---
+ABS_CLOCK = core.Clock()  # Absolute clock to time the experiment phases
 
-    global REL_CLOCK, ABS_CLOCK
-    REL_CLOCK = core.Clock()  # relative clock
-    ABS_CLOCK = core.Clock()  # absolute clock
+# --- Event Marking Variables ---
+# Set event markers for start, stop, and specific phase transitions
+EVENT_MARKERS = {
+    "taskStart": "Task Started",
+    "taskStop": "Task Ended Successfully",
+    "taskAbort": "Task Aborted",
+    "introStart": "Intro Started",
+    "introEnd": "Intro Ended"
+}
 
-    global UI_WIN
-    UI_WIN = visual.Window(PARAMETERS.window['size'], fullscr=PARAMETERS.window['fullscr'],
-                           units=PARAMETERS.window['units'], colorSpace='rgb255',
-                           color=PARAMETERS.screen['bgColor'])
+# --- Default UI Settings (for consistency) ---
+UI_SETTINGS = {
+    "bgColor": [-1, -1, -1],  # Black background
+    "textColor": [1, 1, 1],   # White text
+    "font": "Arial",
+    "fontSize": 24
+}
 
-    global SAVE_DATA
-    SAVE_DATA = []
+# --- Audio Settings ---
+# Add any shared audio settings or resources here if needed
+AUDIO_SETTINGS = {
+    "sample_rate": 44100,
+    "volume": 0.8
+}
 
-    return UI_WIN
-
-# --- Function to show participant info dialog ---
-def showExpInfoDlg():
-    expInfo = {
-        'participant': f"{randint(0, 999999):06.0f}",
-        'session': '001',
-        'date': data.getDateStr(),
-        'expName': 'testing',
-        'psychopyVersion': '2024.2.1',
-    }
-    
-    dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expInfo['expName'], alwaysOnTop=True)
-    if dlg.OK == False:
-        core.quit()  # user pressed cancel
-    return expInfo
-
-# --- Function to create visual stimuli ---
-#def create_stimuli():
-    # global UI_TEXT, UI_RECT
-    
-    # UI_TEXT = visual.TextStim(UI_WIN, text='Welcome', font=PARAMETERS.text['font'],
-    #                           color=PARAMETERS.text['color'], height=PARAMETERS.text['size'])
-
-    #UI_RECT = visual.Rect(UI_WIN, width=200, height=200, fillColor=[255, 0, 0])
-
-# --- Main function to run the experiment --- this can exist somewhere else, but for now it will go here 
-# def run_experiment():
-#     create_globals()  # Initialize global variables and clocks
-#     expInfo = showExpInfoDlg()  # Show participant info dialog
-#     create_stimuli()  # Create all stimuli
-
-#     # Now the experiment can begin
-#     UI_TEXT.draw()  # Display text stimulus
-#     UI_WIN.flip()  # Refresh the window to display the stimulus
-
-#     core.wait(2)  # Wait for 2 seconds
-#     #UI_RECT.draw()  # Display rectangle stimulus
-#     #UI_WIN.flip()  # Refresh the window to display the stimulus
-
-#     #core.wait(2)  # Wait for 2 seconds before ending the experiment
-
-# if __name__ == '__main__':
-#     run_experiment()
+# --- Utility Functions ---
+def reset_clock():
+    """Reset the global absolute clock for timing consistency."""
+    ABS_CLOCK.reset()

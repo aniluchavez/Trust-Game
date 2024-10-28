@@ -1,9 +1,26 @@
-import Code.globals as glb
-import matlab
+import globals as glb
+# import matlab
 
-def markEvent(EventType:str, *args):
-    eventName=''
-    eventTime=glb.ABS_CLOCK.getTime()
+def markEvent(EventType: str, PARAMETERS=None, *args, **kwargs):
+    """
+    Log events during the experiment with standardized event names and timing.
+    
+    Parameters:
+    ----------
+    EventType : str
+        The type of event to log (e.g., 'taskStart', 'trialStart').
+    PARAMETERS : Parameters, optional
+        The Parameters instance where events will be stored.
+    *args : tuple
+        Positional arguments for event specifics.
+    **kwargs : dict
+        Additional keyword arguments like 'trialIdx' or 'blockIdx'.
+    """
+    # Get the event time using the global clock
+    eventTime = glb.ABS_CLOCK.getTime()
+    
+    # Define event names based on EventType and additional arguments
+    eventName = ""
     match EventType:
         case "taskStart":
             eventName = "Task Started"
@@ -11,69 +28,51 @@ def markEvent(EventType:str, *args):
             eventName = "Task Ended Successfully"
         case "taskAbort":
             eventName = "Task Aborted"
-
         case "introStart":
-            eventName = f"Intro Started"
+            eventName = "Intro Started"
         case "introEnd":
-            eventName = f"Intro Ended"
-
+            eventName = "Intro Ended"
         case "blockStart":
-            eventName = f"Block {args[0]} Started"
+            eventName = f"Block {kwargs.get('blockIdx', '')} Started"
         case "blockEnd":
-            eventName = f"Block {args[0]} Ended"
+            eventName = f"Block {kwargs.get('blockIdx', '')} Ended"
         case "trialStart":
-            eventName = f"Trial {args[0]} Started"
+            eventName = f"Trial {kwargs.get('trialIdx', '')} in Block {kwargs.get('blockIdx', '')} Started"
         case "trialEnd":
-            eventName = f"Trial {args[0]} Ended"
-        case "trialBlockStart":
-            eventName = f"Trial {args[0]} in Block {args[1]} Started"
-        case "trialBlockEnd":
-            eventName = f"Trial {args[0]} in Block {args[1]} Ended"
-
+            eventName = f"Trial {kwargs.get('trialIdx', '')} in Block {kwargs.get('blockIdx', '')} Ended"
         case "DecisionStart":
-            eventName = f"Decison Phase {args[0]} Started"
+            eventName = "Decision Phase Started"
         case "DecisionEnd":
-            eventName=f"Decision Phase {args[0]} Ended"
+            eventName = "Decision Phase Ended"
         case "UserChoice":
-            eventName=f"User Made Choice {args[0]}"
-        case "OtherChoice":
-            eventName=f"Other Made Choice {args[0]}"
+            eventName = f"User Made Choice {kwargs.get('choice', '')}"
         case "OutcomeStart":
-            eventName= f"Outcome Phase {args[0]} Started"
+            eventName = "Outcome Phase Started"
         case "OutcomeEnd":
-            eventName= f"Outcome Phase {args[0]} Ended"
-        case "LotteryStart":
-            eventName=f"Lottery Phase {args[0]} Started"
-        case "LotteryEnded":
-            eventName=f"Lottery Phase {args[0]} Started"
-        case "AdviceGiven":
-            eventName=f"Advice was Given {args[0]}"
-        case "AdviceEnded":
-            eventName=f"Advice was Ended {args[0]}"
-        case "LotteryChoice":
-            eventName=f"User made Choice {args[0]}"
+            eventName = "Outcome Phase Ended"
         case "TrustworthyRankStart":
-            eventName=f"Trustworthy ranking made {args[0]}"
+            eventName = f"Trustworthy Ranking Started {kwargs.get('rank', '')}"
         case "TrustworthyRankEnd":
-            eventName=f"Trustworthy rankind ended {args[0]}"
-
+            eventName = f"Trustworthy Ranking Ended {kwargs.get('rank', '')}"
         case _:
-            eventName = f'UNKNOWN EVENT'    
-    glb.PARAMETERS.events.append((eventName, eventTime))
+            eventName = "UNKNOWN EVENT"
 
-        
-    match glb.PARAMETERS.ID['expEnv']:
-        case "BCM-EMU":
-            match EventType:
-                case "taskStart":
-                    onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout = 1)
-                    glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
-                case "taskStop":
-                    glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout = 0)
-                case "taskAbort":
-                    glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout = 0)
-                case _:
-                    blackRockComment = glb.MATENG.cellstr(list(eventName))
-                    glb.MATENG.workspace['blackRockComment'] = blackRockComment
-                    glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout = 0)
-                    glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment,'instance',onlineNSP(i)-1); end", nargout = 0)   
+    # Append the event and time to PARAMETERS' events list, if provided
+    if PARAMETERS:
+        PARAMETERS.events.append((eventName, eventTime))
+
+    # Additional environment-specific handling if needed
+    # if PARAMETERS and PARAMETERS.ID.get('expEnv') == "BCM-EMU":
+    #     match EventType:
+    #         case "taskStart":
+    #             onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout=1)
+    #             glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
+    #         case "taskStop":
+    #             glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout=0)
+    #         case "taskAbort":
+    #             glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout=0)
+    #         case _:
+    #             blackRockComment = glb.MATENG.cellstr([eventName])
+    #             glb.MATENG.workspace['blackRockComment'] = blackRockComment
+    #             glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout=0)
+    #             glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment, 'instance', onlineNSP(i)-1); end", nargout=0)
