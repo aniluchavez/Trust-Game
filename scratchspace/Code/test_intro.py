@@ -11,7 +11,7 @@ def create_window():
         size=(1024, 768), 
         fullscr=False, 
         units='norm',  # Normalized units for consistent positioning
-        color=[0.5, 0.5, 0.5],  # Gray background
+        color=[-1, -1, -1],  # Gray background
         colorSpace='rgb'
     )
 
