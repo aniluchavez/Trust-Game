@@ -1,5 +1,4 @@
-# experiment.py
-from psychopy import core, visual
+from psychopy import core
 from markEvent import markEvent
 from trial import TrustGameTrial
 from Class.game_logic import GameLogic
@@ -7,54 +6,38 @@ from stimuli import load_partner_image
 import globals as glb
 
 def run_experiment():
-    PARAMETERS = glb.PARAMETERS  # Access PARAMETERS from globals
+    PARAMETERS = glb.PARAMETERS
     UI_WIN = PARAMETERS.create_window()
-    all_data = []  # To store data across all trials
+    all_data = []
 
-    # Mark the start of the experiment
-    markEvent("taskStart", PARAMETERS=PARAMETERS)
+    # Show welcome screen
+    welcome_trial = TrustGameTrial(
+        UI_WIN=UI_WIN,
+        PARAMETERS=PARAMETERS,
+        partner_name="",
+        game_logic=None,
+        user_role="trustor",
+        cpu_role="trustee",
+        trialIdx=0,
+        blockIdx=0
+    )
+    welcome_trial.show_welcome()
 
-    # Iterate through each block in the experiment
     for block_idx, block in enumerate(PARAMETERS.blocks):
-        # Define user and CPU roles for this block
+        # Block setup (roles, partner image, etc.)
         user_role = block.get('user_role', 'trustor')
         cpu_role = 'trustee' if user_role == 'trustor' else 'trustor'
-        
-        # Initialize GameLogic for each block with specified trustworthiness and initial money
         game_logic = GameLogic(
             PARAMETERS=PARAMETERS,
             trustworthiness=block['trustworthiness'],
             initial_money=1
         )
-
-        # Load the partner's image for this block
         partner_image = load_partner_image(UI_WIN, PARAMETERS.stimuli['imageFolder'])
 
-        # Introductory phase (shown once per block)
-        intro_trial = TrustGameTrial(
-            UI_WIN=UI_WIN,
-            PARAMETERS=PARAMETERS,
-            partner_name=block['name'],
-            game_logic=game_logic,
-            user_role=user_role,
-            cpu_role=cpu_role,
-            trialIdx=0,
-            blockIdx=block_idx,
-            partner_image=partner_image
-        )
-        intro_trial.show_intro()
-
-        # Trial loop within each block
+        # Run trials for the block
         for trial_idx in range(block['num_trials']):
-            # Optionally alternate roles within trials if specified
-            if block.get('alternate_roles', False):
-                trial_user_role = 'trustor' if trial_idx % 2 == 0 else 'trustee'
-                trial_cpu_role = 'trustee' if trial_user_role == 'trustor' else 'trustor'
-            else:
-                trial_user_role = user_role
-                trial_cpu_role = cpu_role
-
-            # Run each trial
+            trial_user_role = 'trustor' if trial_idx % 2 == 0 else 'trustee' if block.get('alternate_roles', False) else user_role
+            trial_cpu_role = 'trustee' if trial_user_role == 'trustor' else 'trustor'
             trial = TrustGameTrial(
                 UI_WIN=UI_WIN,
                 PARAMETERS=PARAMETERS,
@@ -66,17 +49,34 @@ def run_experiment():
                 blockIdx=block_idx,
                 partner_image=partner_image
             )
-            trial_data = trial.run_trial()  # Execute the trial
-            all_data.append(trial_data)  # Collect trial data
+            trial_data = trial.run_trial()
 
-    # Mark the end of the experiment
+            # Capture initial ranking from the first trial
+            if trial_idx == 0:
+                trial_data["initial_ranking"] = trial.trust_slider.getRating() or 5
+
+            all_data.append(trial_data)
+
+        # End-of-block trust rating
+        block_end_trial = TrustGameTrial(
+            UI_WIN=UI_WIN,
+            PARAMETERS=PARAMETERS,
+            partner_name=block['name'],
+            game_logic=game_logic,
+            user_role=user_role,
+            cpu_role=cpu_role,
+            trialIdx=0,
+            blockIdx=block_idx,
+            partner_image=partner_image
+        )
+        end_block_ranking = block_end_trial.show_block_ranking()
+        all_data.append({"blockIdx": block_idx, "end_block_ranking": end_block_ranking})
+
     markEvent("taskStop", PARAMETERS=PARAMETERS)
-
-    # Save all collected trial data
     save_data(all_data)
+    UI_WIN.close()
 
 def save_data(data_records, filename="experiment_data"):
-    """Save collected data to a CSV file."""
     import csv, os
     filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
     with open(filepath, 'w', newline='') as file:

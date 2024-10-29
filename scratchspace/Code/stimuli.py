@@ -60,13 +60,50 @@ def create_button(UI_WIN, label, pos):
     )
     return button_rect, button_text
 
+
 def create_trust_slider(UI_WIN):
     """
-    Creates a slider to rate trustworthiness.
+    Creates a slider to rate trustworthiness on a scale of 1 to 10.
     """
-    return visual.Slider(
-        win=UI_WIN, size=(0.8, 0.1), pos=(0, -0.4),
-        labels=["Not Trustworthy", "Neutral", "Very Trustworthy"],
-        ticks=[1, 2, 3, 4, 5, 6, 7],
-        granularity=1
+    trust_slider=visual.Slider(
+        win=UI_WIN,
+        size=(0.8, 0.1),
+        pos=(0, -0.7),
+        labels=[str(i) for i in range(1, 11)],  # Scale labels from 1 to 10
+        ticks=list(range(1, 11)),  # Ticks from 1 to 10
+        granularity=1,
+        style=['rating', 'triangleMarker'],
+        labelHeight=0.04  # Adjust label font size for spacing
     )
+
+    # Instruction text above the slider
+    instructions_text = visual.TextStim(
+        win=UI_WIN,
+        text="Please rate the trustworthiness of your partner on the scale below. Move slider to desired ranking and press ENTER",
+        pos=(0, -0.3),  # Position above the slider
+        height=0.07
+    )
+
+    # Add text labels for "Not Trustworthy," "Neutral," and "Trustworthy"
+    not_trustworthy_label =visual.TextStim(
+        win=UI_WIN,
+        text="Not Trustworthy",
+        pos=(-0.4, -0.6),  # Position to the left of the slider
+        height=0.05
+    )
+    
+    neutral_label = visual.TextStim(
+        win=UI_WIN,
+        text="Neutral",
+        pos=(0, -0.6),  # Position centered under the slider
+        height=0.05
+    )
+    
+    trustworthy_label = visual.TextStim(
+        win=UI_WIN,
+        text="Trustworthy",
+        pos=(0.4, -0.6),  # Position to the right of the slider
+        height=0.05
+    )
+    # Return the slider, instructions, and labels as a tuple
+    return trust_slider, instructions_text, not_trustworthy_label, neutral_label, trustworthy_label
