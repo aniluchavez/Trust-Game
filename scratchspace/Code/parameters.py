@@ -1,4 +1,4 @@
-from psychopy import core, gui, data, prefs, visual
+from psychopy import core, gui, data, prefs, visual,monitors
 from numpy.random import randint
 import os
 
@@ -9,20 +9,12 @@ prefs.hardware['audioLatencyMode'] = '3'
 class Parameters:
     def __init__(self):
         # Screen, text, and window configurations
-        self.screen = {
-            'number': 1,
-            'bgColor': [0.5, 0.5, 0.5]  # Gray background color
-        }
-        self.text = {
-            'font': 'Arial',
-            'size': 24,
-            'color': [1, 1, 1]  # White text color in RGB format
-        }
-        self.window = {
-            'size': [1024, 768],
-            'fullscr': False,
-            'units': 'pix'
-        }
+        self.screen = {'number': 1, 'bgColor': [0.5, 0.5, 0.5]}
+        self.text = {'font': 'Arial', 'size': 24, 'color': [1, 1, 1]}  # Simplified font to 'Arial'
+        self.window = {'size': [1024, 768], 'fullscr': False, 'units': 'norm'}
+
+        self.monitor = monitors.Monitor(name='testMonitor', width=30.0, distance=60.0)
+        self.monitor.setSizePix([1024, 768])
 
         # Experiment structure and timing settings
         self.exp = {
@@ -78,11 +70,13 @@ class Parameters:
         return expInfo
 
     def create_window(self):
-        """Creates the PsychoPy window based on parameters."""
-        return visual.Window(
+        """Creates the PsychoPy window with consistent parameters."""
+        self.UI_WIN = visual.Window(
             size=self.window['size'],
             fullscr=self.window['fullscr'],
             units=self.window['units'],
             color=self.screen['bgColor'],
-            colorSpace='rgb'
+            colorSpace='rgb',
+            monitor=self.monitor  # Using explicit monitor settings
         )
+        return self.UI_WIN

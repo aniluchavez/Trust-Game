@@ -11,20 +11,33 @@ def load_partner_image(UI_WIN, folder_path):
         raise FileNotFoundError(f"No .jpg images found in directory {folder_path}")
     chosen_image = os.path.join(folder_path, random.choice(image_files))
     print(f"Chosen image for partner: {chosen_image}")
-    return visual.ImageStim(UI_WIN, image=chosen_image, pos=(0, 0.5), size=(0.5, 0.5))
+    return visual.ImageStim(
+        UI_WIN,
+        image=chosen_image,
+        units="norm",  # Normalized units for consistent size on different screens
+        pos=(0, 0.5),  # Position image towards the top
+        size=(0.8, 0.8)  # Make image a bit smaller to fit comfortably
+    )
 
 def create_text_stimuli(UI_WIN, PARAMETERS, text_content, pos=(0, 0)):
     """
     Creates a TextStim object for displaying text.
     """
-    return visual.TextStim(
-        win=UI_WIN,
-        text=text_content,
-        font=PARAMETERS.text['font'],
-        color=PARAMETERS.text['color'],
-        height=PARAMETERS.text['size'],
-        pos=pos
-    )
+    try:
+        return visual.TextStim(
+            win=UI_WIN,
+            text=text_content,
+            font=PARAMETERS.text.get('font', 'Arial'),  # Default to Arial if unspecified
+            color=PARAMETERS.text.get('color', [1, 1, 1]),  # Ensure color is in RGB format
+            colorSpace='rgb',
+            height=0.1,  # Default text height, should scale to 'norm' units
+            units='norm',
+            pos=pos
+        )
+    except Exception as e:
+        print(f"Error creating TextStim for '{text_content}': {e}")
+        return None
+
 
 def create_button(UI_WIN, label, pos):
     """
