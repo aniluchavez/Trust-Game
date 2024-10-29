@@ -32,7 +32,8 @@ class Parameters:
 
         # Image and stimuli settings
         self.stimuli = {
-            "imageFolder": "/Users/aniluchavez/Documents/GitHub/Scratch/scratchspace/Images/CFD-MR",
+            # "imageFolder": "/Users/aniluchavez/Documents/GitHub/Scratch/scratchspace/Images/CFD-MR",
+            "imageFolder": "Images/CFD-MR",
             'numImages': 2,  # Number of images to select from
             'sliderLabels': ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         }
