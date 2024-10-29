@@ -22,7 +22,7 @@ class Parameters:
             'outputDir': 'data'  # Output directory for saving data
         }
         self.block = {
-            'numTrials': 2  # Number of trials in each block
+            'numTrials': 24  # Number of trials in each block
         }
         self.timing = {
             'decisionDuration': 3,  # Decision phase duration (in seconds)

@@ -17,7 +17,7 @@ class CPU:
 
     def decide_return(self, received_amount):
         """
-        Decide amount to return based on trustworthiness and weights.
+        Decide amount to return based on trustworthiness and biased sampling.
 
         Parameters:
         ----------
@@ -29,9 +29,14 @@ class CPU:
         int
             Amount the CPU decides to return.
         """
-        low_range = random.uniform(0.0, 0.6)
-        high_range = random.uniform(0.6, 0.9)
-        chosen_range = low_range if random.random() < self.weights['low'] else high_range
+        # Bias towards a specific range based on weights and trustworthiness
+        if random.random() < self.weights['high']:
+            # Higher probability of sampling from the higher range for trustworthy, lower for untrustworthy
+            chosen_range = random.uniform(0.5, 1.0)
+        else:
+            # Lower probability range
+            chosen_range = random.uniform(0.0, 0.5)
+
         return int(received_amount * chosen_range)
 
 class GameLogic:
@@ -49,6 +54,7 @@ class GameLogic:
             Starting money for the trustor.
         """
         self.trustor_money = initial_money
+        self.cpu_money = initial_money  # Initialize CPU's starting money
         self.cpu = CPU(PARAMETERS, trustworthiness)
 
     def trustor_decision(self, choice):
@@ -63,15 +69,16 @@ class GameLogic:
         Returns:
         --------
         int
-            Amount given if 'give', or 0 if 'keep'.
+            Amount relevant to the outcome display.
         """
         if choice == 'give':
             amount_given = self.trustor_money * 3
-            self.trustor_money = 0  # Reset to 0, updated in outcome phase based on CPU return
+            self.trustor_money = 0  # Reset to 0 after giving; will be updated in outcome phase
             return amount_given
         elif choice == 'keep':
-            self.trustor_money += 1  # Increment if keeping
-            return 0
+            initial_money = self.trustor_money  # Store amount before increase for display
+            self.trustor_money += 1  # Increase by 1 if keeping
+            return initial_money
         else:
             raise ValueError("Invalid choice. Choose 'keep' or 'give'.")
 
@@ -90,7 +97,15 @@ class GameLogic:
             Amount returned by the CPU.
         """
         if amount_given > 0:
+            # CPU receives amount, update cpu_money based on received amount
+            self.cpu_money += amount_given
             returned_amount = self.cpu.decide_return(amount_given)
-            self.trustor_money += returned_amount  # Update user's money with returned amount
-            return returned_amount
-        return 0
+            self.trustor_money += returned_amount  # Update trustor's money with the returned amount
+        else:
+            returned_amount = 0
+
+        # Ensure the trustor has at least $1 for the next round
+        if self.trustor_money == 0:
+            self.trustor_money = 1
+
+        return returned_amount

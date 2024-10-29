@@ -45,11 +45,11 @@ def create_button(UI_WIN, label, pos):
     """
     button_rect = visual.Rect(
         win=UI_WIN,
-        width=0.3,
-        height=0.15,
+        width=0.6,
+        height=0.2,
         pos=pos,
         fillColor='blue',
-        lineColor='white'
+        lineColor='blue'
     )
     button_text = visual.TextStim(
         win=UI_WIN,

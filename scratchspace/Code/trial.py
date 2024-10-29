@@ -134,9 +134,11 @@ class TrustGameTrial:
     
     def run_decision_phase(self):
         """Decision phase where the user chooses to keep or give."""
+        # Update button text with current amounts
         self.keep_button_text.text = f"Keep ${self.game_logic.trustor_money}"
         self.give_button_text.text = f"Give ${self.game_logic.trustor_money * 3}"
 
+        # Draw decision phase elements
         self.partner_image.draw()
         self.partner_name_text.draw()
         self.keep_button_rect.draw()
@@ -145,24 +147,51 @@ class TrustGameTrial:
         self.give_button_text.draw()
         self.UI_WIN.flip()
 
+        # Get user input
         keys = event.waitKeys(keyList=['1', '3', 'escape'])
         if 'escape' in keys:
             core.quit()
         decision = 'keep' if '1' in keys else 'give'
-        amount_given = self.game_logic.trustor_decision(decision) if self.user_role == 'trustor' else 0
+        
+        # Process the decision and get the amount for display
+        amount_given = self.game_logic.trustor_decision(decision)
 
-        return {"choice": decision, "amount": amount_given if decision == 'give' else self.game_logic.trustor_money}
+        return {"choice": decision, "amount": amount_given}
 
-    def run_outcome_phase(self, amount_given):
-        """Outcome phase where CPU decides return based on amount given."""
-        returned_amount = self.game_logic.outcome_phase(amount_given) if self.cpu_role == 'trustee' else 0
-        self.outcome_text.text = f"Partner returned ${returned_amount}" if returned_amount > 0 else "Partner kept the money"
+    def run_outcome_phase(self, decision_data):
+        """Outcome phase where results are displayed based on the user's decision and CPU response."""
+        decision = decision_data["choice"]
+        amount_given = decision_data["amount"]
+
+        # Determine outcome based on the decision
+        if decision == "keep":
+            outcome_message = f"You kept ${amount_given}"  # Display the amount before increment
+        else:
+            # CPU processes the return if the trustor decided to give
+            returned_amount = self.game_logic.outcome_phase(amount_given)
+            if returned_amount > 0:
+                outcome_message = f"Partner returned ${returned_amount}"
+            else:
+                outcome_message = "Partner kept the money"
+                # Check if the user's balance was replenished to $1
+                if self.game_logic.trustor_money == 1:
+                    outcome_message += " (Your balance was replenished to $1)"
+
+        # Display the outcome message
+        self.outcome_text.text = outcome_message
         self.outcome_text.draw()
         self.UI_WIN.flip()
         core.wait(2)  # Display outcome for 2 seconds
 
-        return {"choice": "return", "amount": returned_amount} if returned_amount > 0 else {"choice": "keep", "amount": 0}
-    
+        # Return final outcome data
+        return {
+            "choice": decision,
+            "amount_given": amount_given if decision == "give" else 0,
+            "amount_returned": returned_amount if decision == "give" else 0
+        }
+
+
+
     # This is the end of block ranking
     def show_block_ranking(self):
         """Display trustworthiness ranking screen at the end of the block, allowing Enter key to confirm."""
@@ -212,21 +241,21 @@ class TrustGameTrial:
         # Proceed with decision and outcome phases
         user_decision = self.run_decision_phase()
         decision_time = glb.ABS_CLOCK.getTime()
-        markEvent("UserChoice", role=self.user_role, decision=user_decision, time=decision_time)
+        markEvent("UserChoice", role=self.user_role, decision=user_decision["choice"], time=decision_time)
 
         # Outcome Phase
-        cpu_response = self.run_outcome_phase(user_decision['amount'])
+        cpu_response = self.run_outcome_phase(user_decision)  # Pass the entire decision dictionary
         outcome_time = glb.ABS_CLOCK.getTime()
-        markEvent("OutcomeEnd", returned_amount=cpu_response['amount'], time=outcome_time)
+        markEvent("OutcomeEnd", returned_amount=cpu_response["amount_returned"], time=outcome_time)
 
         # Return trial data
         return {
-            "trialIdx": self.trialIdx,
-            "blockIdx": self.blockIdx,
-            "user_role": self.user_role,
-            "cpu_role": self.cpu_role,
-            "user_decision": user_decision,
-            "cpu_response": cpu_response,
-            "decision_time": decision_time,
-            "outcome_time": outcome_time
+        "trialIdx": self.trialIdx,
+        "blockIdx": self.blockIdx,
+        "user_role": self.user_role,
+        "cpu_role": self.cpu_role,
+        "user_decision": user_decision,
+        "cpu_response": cpu_response,
+        "decision_time": decision_time,
+        "outcome_time": outcome_time
         }
