@@ -1,2 +1,3 @@
-trialIdx,blockIdx,user_role,cpu_role,user_decision,cpu_response,decision_time,outcome_time
-0,0,trustor,trustee,"{'choice': 'keep', 'amount': 2}","{'choice': 'return', 'amount': 1}",7.661715041613206,9.666551541769877
+blockIdx,partner,initial_rating
+0,Kendall Christie,8
+0,Alex Smith,8

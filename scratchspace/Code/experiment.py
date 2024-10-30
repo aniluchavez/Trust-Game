@@ -3,7 +3,9 @@ from markEvent import markEvent
 from trial import TrustGameTrial
 from Class.game_logic import GameLogic
 from stimuli import load_partner_image
+from LotteryTrial import LotteryTrial
 import globals as glb
+import random
 
 def run_experiment():
     all_data = []
@@ -20,56 +22,99 @@ def run_experiment():
         blockIdx=0
     )
     welcome_trial.show_welcome()
+    
+    # Experiment structure from parameters
+    num_blocks, num_trials_per_block = PARAMETERS.get_block_info()
 
-    for block_idx, block in enumerate(PARAMETERS.blocks):
-        # Block setup (roles, partner image, etc.)
-        user_role = block.get('user_role', 'trustor')
-        cpu_role = 'trustee' if user_role == 'trustor' else 'trustor'
-        game_logic = GameLogic(
-            PARAMETERS=PARAMETERS,
-            trustworthiness=block['trustworthiness'],
-            initial_money=1
-        )
-        partner_image = load_partner_image(UI_WIN, PARAMETERS.stimuli['imageFolder'])
+    # Loop through each block
+    for block_idx in range(num_blocks):
+        cpu_configs = PARAMETERS.get_block_partners(block_idx)
 
-        # Run trials for the block
-        for trial_idx in range(block['num_trials']):
-            trial_user_role = 'trustor' if trial_idx % 2 == 0 else 'trustee' if block.get('alternate_roles', False) else user_role
-            trial_cpu_role = 'trustee' if trial_user_role == 'trustor' else 'trustor'
-            trial = TrustGameTrial(
+        # Initialize GameLogic with selected partners for each block
+        game_logic = GameLogic(PARAMETERS, cpu_configs, initial_money=1)
+        game_logic.reset_amounts()
+
+        # Load images for each partner
+        partner_images = {
+            partner["name"]: load_partner_image(UI_WIN, PARAMETERS.stimuli['imageFolder'])
+            for partner in cpu_configs
+        }
+
+        # Show initial trust rating for each partner only once per block
+        initial_ratings = {}
+        for cpu_index, partner_config in enumerate(cpu_configs):
+            if partner_config["name"] not in initial_ratings:
+                intro_trial = TrustGameTrial(
+                    UI_WIN=UI_WIN,
+                    PARAMETERS=PARAMETERS,
+                    partner_name=partner_config["name"],
+                    game_logic=game_logic,
+                    cpu_index=cpu_index,
+                    user_role="trustor",
+                    cpu_role="trustee",
+                    trialIdx=0,
+                    blockIdx=block_idx,
+                    partner_image=partner_images[partner_config["name"]]
+                )
+                initial_rating = intro_trial.show_intro()
+                initial_ratings[partner_config["name"]] = initial_rating
+                all_data.append({
+                    "blockIdx": block_idx,
+                    "partner": partner_config["name"],
+                    "initial_rating": initial_rating
+                })
+
+        # Generate interleaved trial list using get_interleaved_trial_types only
+        interleaved_trials = PARAMETERS.get_interleaved_trial_types(num_trials_per_block)
+        print(f"Block {block_idx + 1} trial types:", interleaved_trials)  # Debug statement
+
+        # Run each trial based on the interleaved structure
+        for trial_idx, trial_type in enumerate(interleaved_trials):
+            if trial_type == "trust":
+                cpu_index, partner_config = random.choice(list(enumerate(cpu_configs)))
+                trial = TrustGameTrial(
+                    UI_WIN=UI_WIN,
+                    PARAMETERS=PARAMETERS,
+                    partner_name=partner_config["name"],
+                    game_logic=game_logic,
+                    cpu_index=cpu_index,
+                    user_role="trustor",
+                    cpu_role="trustee",
+                    trialIdx=trial_idx,
+                    blockIdx=block_idx,
+                    partner_image=partner_images[partner_config["name"]]
+                )
+                trial_data = trial.run_trial()
+                trial_data["initial_rating"] = initial_ratings[partner_config["name"]]
+                all_data.append(trial_data)
+
+            elif trial_type == "lottery":
+                lottery_trial = LotteryTrial(UI_WIN, PARAMETERS, game_logic, list(partner_images.keys()), trial_idx, block_idx)
+                lottery_data = lottery_trial.run_trial()
+                all_data.append(lottery_data)
+
+        # End-of-block trust rating for each partner
+        for cpu_index, partner_config in enumerate(cpu_configs):
+            block_end_trial = TrustGameTrial(
                 UI_WIN=UI_WIN,
                 PARAMETERS=PARAMETERS,
-                partner_name=block['name'],
+                partner_name=partner_config["name"],
                 game_logic=game_logic,
-                user_role=trial_user_role,
-                cpu_role=trial_cpu_role,
-                trialIdx=trial_idx,
+                cpu_index=cpu_index,
+                user_role="trustor",
+                cpu_role="trustee",
+                trialIdx=0,
                 blockIdx=block_idx,
-                partner_image=partner_image
+                partner_image=partner_images[partner_config["name"]]
             )
-            trial_data = trial.run_trial()
+            end_block_ranking = block_end_trial.show_block_ranking()
+            all_data.append({
+                "blockIdx": block_idx,
+                "partner": partner_config["name"],
+                "end_block_ranking": end_block_ranking
+            })
 
-            # Capture initial ranking from the first trial
-            if trial_idx == 0:
-                trial_data["initial_ranking"] = trial.trust_slider.getRating() or 5
-
-            all_data.append(trial_data)
-
-        # End-of-block trust rating
-        block_end_trial = TrustGameTrial(
-            UI_WIN=UI_WIN,
-            PARAMETERS=PARAMETERS,
-            partner_name=block['name'],
-            game_logic=game_logic,
-            user_role=user_role,
-            cpu_role=cpu_role,
-            trialIdx=0,
-            blockIdx=block_idx,
-            partner_image=partner_image
-        )
-        end_block_ranking = block_end_trial.show_block_ranking()
-        all_data.append({"blockIdx": block_idx, "end_block_ranking": end_block_ranking})
-
+    # Mark the end of the experiment and save data
     markEvent("taskStop", PARAMETERS=PARAMETERS)
     save_data(all_data)
     UI_WIN.close()

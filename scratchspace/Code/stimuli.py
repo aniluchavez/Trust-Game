@@ -1,4 +1,6 @@
-from psychopy import visual
+from psychopy.visual import ImageStim
+import os
+import random
 import globals as glb
 import os
 import random
@@ -27,21 +29,32 @@ def draw_text(Text, Height = 0, WrapWidth = 1, Pos = (0,0)):
 
 
 
-def load_partner_image(UI_WIN, folder_path):
+def load_partner_image(UI_WIN, image_folder):
     """
-    Load a random image from the folder and create an ImageStim.
+    Load a random partner image from the specified folder.
+    Parameters:
+    ----------
+    UI_WIN : psychopy.visual.Window
+        Window object where the image will be displayed.
+    image_folder : str
+        Path to the folder containing partner images.
+    Returns:
+    --------
+    psychopy.visual.ImageStim
+        The randomly selected partner image with consistent display settings.
     """
-    image_files = [f for f in os.listdir(folder_path) if f.endswith('.jpg')]
-    if not image_files:
-        raise FileNotFoundError(f"No .jpg images found in directory {folder_path}")
-    chosen_image = os.path.join(folder_path, random.choice(image_files))
-    print(f"Chosen image for partner: {chosen_image}")
-    return visual.ImageStim(
+    # List all image files in the folder
+    image_files = [f for f in os.listdir(image_folder) if f.endswith(('.png', '.jpg', '.jpeg'))]
+    chosen_image = random.choice(image_files)
+    image_path = os.path.join(image_folder, chosen_image)
+
+    # Return the ImageStim object with specified display settings
+    return ImageStim(
         UI_WIN,
-        image=chosen_image,
+        image=image_path,
         units="norm",  # Normalized units for consistent size on different screens
-        pos=(0, 0.5),  # Position image towards the top
-        size=(0.8, 0.8)  # Make image a bit smaller to fit comfortably
+        pos=(0, 0.5),  # Position image towards the top of the screen
+        size=(0.8, 0.8)  # Make image smaller to fit comfortably on the screen
     )
 
 def create_text_stimuli(UI_WIN, PARAMETERS, text_content, pos=(0, 0)):
@@ -104,7 +117,7 @@ def create_trust_slider(UI_WIN):
     # Instruction text above the slider
     instructions_text = visual.TextStim(
         win=UI_WIN,
-        text="Please rate the trustworthiness of your partner on the scale below. Move slider to desired ranking and press ENTER",
+        text="Please rate the trustworthiness of your partner on the scale below. Move slider with trackpad to desired ranking and press ENTER",
         pos=(0, -0.3),  # Position above the slider
         height=0.07
     )
