@@ -1,6 +1,31 @@
 from psychopy import visual
+import globals as glb
 import os
 import random
+
+TEXT = visual.TextStim(win=glb.UI_WIN, text="", font = glb.PARAMETERS.text['font'], height= )
+
+def draw_text(Text, Height = 0, WrapWidth = 1, Pos = (0,0)):
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def load_partner_image(UI_WIN, folder_path):
     """

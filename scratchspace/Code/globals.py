@@ -19,7 +19,8 @@ if not os.path.exists(DATA_PATH):
 ABS_CLOCK = core.Clock()
 
 # Global UI Window creation
-UI_WIN = PARAMETERS.create_window()
+UI_WIN = visual.Window(size=PARAMETERS.window['size'], fullscr=PARAMETERS.screen['fullscr'], screen = PARAMETERS.screen['number'],
+                       units=PARAMETERS.window['units'], color=PARAMETERS.window['bgColor'], colorSpace='rgb255')
 
 # Utility function to reset the clock
 def reset_clock():

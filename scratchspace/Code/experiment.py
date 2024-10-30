@@ -6,8 +6,6 @@ from stimuli import load_partner_image
 import globals as glb
 
 def run_experiment():
-    PARAMETERS = glb.PARAMETERS
-    UI_WIN = PARAMETERS.create_window()
     all_data = []
 
     # Show welcome screen

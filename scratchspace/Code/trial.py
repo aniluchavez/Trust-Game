@@ -4,6 +4,45 @@ from psychopy.visual import TextStim
 import globals as glb
 from markEvent import markEvent
 
+
+def show_welcome():
+    """Display welcome message and game instructions at the start of the experiment."""
+    
+    # Create the welcome text stimuli
+    welcome_text = TextStim(
+        win=glb.UI_WIN,
+        text="Welcome to the Trust Game Experiment!\n\nIn this game, you'll be interacting with a partner that precorded their responses.\n\n "
+             "You are the trustor and start with $1 in your account.\n"
+             "You can choose to keep or give money, and your partner may choose to share some amount back or keep it all for themselves.\n\n"
+             "Press 'Enter' to continue.",
+        pos=(0, 0),  # Center of the screen
+        height=0.09,  # Adjust text size as needed
+        wrapWidth=1.5  # Wrap the text for readability
+    )
+    # Draw and wait for participant to press Enter
+    response = None
+    while response is None:
+        welcome_text.draw()
+        glb.UI_WIN.flip()
+        # Wait for Enter key to confirm
+        keys = event.getKeys(keyList=['return'])
+        if 'return' in keys:
+            response = True  # Exit the loop once Enter is pressed
+    # Briefly display a message to confirm the start of the experiment
+    confirmation_text = TextStim(
+        win=glb.UI_WIN,
+        text="Let's begin!",
+        pos=(0, -0.5),
+        height=0.1
+    )
+    for _ in range(30):  # Display for ~1 second
+        confirmation_text.draw()
+        glb.UI_WIN.flip()
+    
+    # Clear the screen before proceeding
+    glb.UI_WIN.flip()
+
+
 class TrustGameTrial:
     def __init__(self, UI_WIN, PARAMETERS, partner_name, game_logic, user_role="trustor", cpu_role="trustee", trialIdx=0, blockIdx=0, partner_image=None):
         self.UI_WIN = UI_WIN
@@ -181,7 +220,7 @@ class TrustGameTrial:
         self.outcome_text.text = outcome_message
         self.outcome_text.draw()
         self.UI_WIN.flip()
-        core.wait(2)  # Display outcome for 2 seconds
+        core.wait(1)  # Display outcome for 2 seconds
 
         # Return final outcome data
         return {
