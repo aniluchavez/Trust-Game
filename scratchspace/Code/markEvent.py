@@ -58,8 +58,9 @@ def markEvent(EventType: str, PARAMETERS=None, *args, **kwargs):
             eventName = "UNKNOWN EVENT"
 
     # Append the event and time to PARAMETERS' events list, if provided
-    if PARAMETERS:
-        PARAMETERS.events.append((eventName, eventTime))
+    # if PARAMETERS:
+    #     PARAMETERS.events.append((eventName, eventTime))
+    glb.EVENTS.append((eventName, eventTime))
 
     # Additional environment-specific handling if needed
     # if PARAMETERS and PARAMETERS.ID.get('expEnv') == "BCM-EMU":

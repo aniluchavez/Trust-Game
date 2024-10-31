@@ -1,6 +1,6 @@
 import random
 from random import choice, randint
-from stimuli import create_text_stimuli
+# from stimuli import create_text_stimuli
 import globals as glb
 from markEvent import markEvent
 from psychopy.visual import TextStim, ImageStim,Rect

@@ -8,10 +8,10 @@ prefs.hardware['audioLib'] = ['sounddevice', 'pygame']
 prefs.hardware['audioLatencyMode'] = '3'
 
 class Parameters:
-    __slots__ = ('screen', 'window', 'text','exp', 'block', 'stimuli', 'timing', 'blocks', 'trustworthy_weights', 'untrustworthy_weights')
+    # __slots__ = ('screen', 'window', 'text','exp', 'block', 'stimuli', 'timing', 'blocks', 'trustworthy_weights', 'untrustworthy_weights')
     def __init__(self):
         # Screen, text, and window configurations
-        self.screen = {'number': 1, 'fullscr': False}
+        self.screen = {'number': 1, 'fullscr': True}
         self.window = {'size': [1024, 768],  'bgColor': [122,122,122], 'units': 'norm'}
         
         self.text   = {'font': 'Arial', 'size': 24, 'color': [255, 255, 255]}  # Simplified font to 'Arial'
@@ -49,26 +49,24 @@ class Parameters:
             {
                 "partners": [
                     {"name": "Kendall Christie", "image": "CFD-MF-300-002-N.jpg", "trustworthiness": "trustworthy", "weights": self.trustworthy_weights},
-                    {"name": "Alex Smith", "image": "CFD-MM-302-010-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights}
+                    # {"name": "Alex Smith", "image": "CFD-MM-302-010-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights}
+                    {"name": "Alex Smith", "image": "CFD-MM-302-002-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights}
                 ],
                 "num_trials_per_partner": 12  # Total trials per partner per block (for interleaving)
             },
             {
                 "partners": [
-                    {"name": "Michael Ham", "image": "CFD-MF-329-003-N.jpg", "trustworthiness": "trustworthy", "weights": {"low": 0.3, "high": 0.7}},
-                    {"name": "Chad Bacon", "image": "CFD-MM-311-007-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}}
+                    # {"name": "Michael Ham", "image": "CFD-MF-329-003-N.jpg", "trustworthiness": "trustworthy", "weights": {"low": 0.3, "high": 0.7}},
+                    {"name": "Michael Ham", "image": "CFD-MF-329-001-N.jpg", "trustworthiness": "trustworthy", "weights": {"low": 0.3, "high": 0.7}},
+                    # {"name": "Chad Bacon", "image": "CFD-MM-311-007-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}}
+                    {"name": "Chad Bacon", "image": "CFD-MM-311-001-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}}
                 ],
                 "num_trials_per_partner": 12  # Customize trial count if required
             }
         ]
 
-        # Global clocks and data storage
-        self.REL_CLOCK = core.Clock()
-        self.ABS_CLOCK = core.Clock()
-        self.SAVE_DATA = []
-        
-        # Initialize events list to store experiment events
-        self.events = []
+        ### DO SOME COMPUTATIONS
+        self.text.update({'sizeCM': self.text['size']*0.0352777778})
 
     def get_block_info(self):
         """Returns the number of blocks and trials per block."""

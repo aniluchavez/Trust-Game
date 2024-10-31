@@ -30,5 +30,5 @@ if __name__ == "__main__":
     os.chdir(f'{os.path.dirname(os.path.realpath(__file__))}/..')
 
     # Launch the experiment using the configuration specified in parameters.py
-    run_setup()
+    # run_setup()
     run_experiment()

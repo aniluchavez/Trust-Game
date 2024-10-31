@@ -1,7 +1,10 @@
 import random
+import globals as glb
+
 
 class CPU:
-    def __init__(self, PARAMETERS, trustworthiness='trustworthy', weights=None, initial_money=1):
+    __slots__ = ('trustworthiness', 'weights', 'money')
+    def __init__(self, trustworthiness='trustworthy', weights=None, initial_money=1):
         """
         Initialize CPU with specific trustworthiness and weights.
 
@@ -17,7 +20,7 @@ class CPU:
             Starting amount for the CPU partner.
         """
         self.trustworthiness = trustworthiness
-        self.weights = weights if weights else PARAMETERS.trustworthy_weights if trustworthiness == 'trustworthy' else PARAMETERS.untrustworthy_weights
+        self.weights = weights if weights else glb.PARAMETERS.trustworthy_weights if trustworthiness == 'trustworthy' else glb.PARAMETERS.untrustworthy_weights
         self.money = initial_money  # Start money for this partner
 
     def decide_return(self, tripled_investment):
@@ -41,7 +44,7 @@ class CPU:
         return int(tripled_investment * chosen_range)
 
 class GameLogic:
-    def __init__(self, PARAMETERS, cpu_configs, initial_money=10, user_role="trustor"):
+    def __init__(self, cpu_configs, initial_money=10, user_role="trustor"):
         """
         Initialize game logic with multiple CPU partners.
 
@@ -64,7 +67,7 @@ class GameLogic:
         
         # Create CPU partners
         self.cpus = [
-            CPU(PARAMETERS, config['trustworthiness'], config.get('weights'), initial_money)
+            CPU(config['trustworthiness'], config.get('weights'), initial_money)
             for config in cpu_configs
         ]
 
