@@ -2,8 +2,6 @@ import random
 from os import path
 
 from psychopy import core, event
-# from stimuli import create_text_stimuli, create_button, create_trust_slider
-# from psychopy.visual import TextStim, Rect
 
 import stimuli as stim
 import globals as glb
@@ -35,6 +33,8 @@ def show_welcome():
     core.wait(3)
 
 
+
+
 # FUNCTION THAT PROMPTS THE PARTICIPANT TO RATE THE TRUSTWORTHINESS OF AN INDIVIDUAL
 # Arguments: 
 #   PartnerImage:   The filename for the image of the partner
@@ -55,7 +55,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str):
         stim.draw_image(partnerImageName, Pos= (0,0.5), Size=(0.8,0.8))     # Draw the Partner image
         stim.draw_text(f"Partner: {PartnerName}",Height=50, Pos=(0,0))      # Draw the Partner's name
         stim.draw_text(INSTRUCTIONS_TEXT, Pos=(0, -0.3), Height=40)         # Draw the instructions
-        stim.draw_slider()                                                  # Draw the trust slider
+        stim.SLIDER.draw()                                                  # Draw the trust slider
         stim.draw_text("Not Trustworthy", Pos=(-0.4, -0.6), Height=40)      # Draw the leftmost label
         stim.draw_text("Neutral", Pos=(0,-0.6), Height=40)                  # Draw the middle label
         stim.draw_text("Trustworthy", Pos=(0.4, -0.6), Height=40)           # Draw the rightmost label
@@ -75,7 +75,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str):
     # Draw the experiment after it is done
     stim.draw_image(partnerImageName, Pos= (0,0.5), Size=(0.8,0.8))     # Draw the Partner image
     stim.draw_text(f"Partner: {PartnerName}", Pos=(0,0), Height=50)     # Draw the Partner's name
-    stim.draw_slider()                                                  # Draw the trust slider and its response
+    stim.SLIDER.draw()                                                  # Draw the trust slider and its response
     stim.draw_text("Not Trustworthy", Pos=(-0.4, -0.6), Height=40)      # Draw the leftmost label
     stim.draw_text("Neutral", Pos=(0,-0.6), Height=40)                  # Draw the middle label
     stim.draw_text("Trustworthy", Pos=(0.4, -0.6), Height=40)           # Draw the rightmost label
@@ -86,12 +86,26 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str):
     core.wait(3) 
     return response
 
+
+
+
 # FUNCTION THAT ASKS THE PARTICIPANT TO KEEP OR INVEST
 # Arguments:
-#   TrialIdx:       
-def normal_trial(TrialIdx, BlockIdx, UserRole, CpuRole, GameLogic, CpuIndex, PartnerImage, PartnerName):
-    glb.reset_clock()
-    markEvent("trialStart", trialIdx=TrialIdx, blockIdx=BlockIdx)
+#   TrialIdx:       The index of the current trial
+#   BlockIdx:       The index of the current block
+#   UserRole:       The role of the participant
+#   CpuRole:        The role of the CPU
+#   GameLogic:      The parameters and logic that will be followed in this trial
+#   CpuIndex:       The index of the Cpu
+#   PartnerImage:   The filename of the image that represents the CPU/partner
+#   PartnerName:    The personalized name given to the CPU/partner
+# Returns:
+#   Dictionary Containing: Trial Index, Block Index, Participant's Role, CPU's Role, Participant's Decision, CPU's Decision
+def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
+    glb.reset_clock()       # Reset the clock (idk why)
+
+    markEvent("trialStart", trialIdx=TrialIdx, blockIdx=BlockIdx) # Mark the start of the trial
+    # Act on whether the user is a trustor (decision->outcome) or a trustee (outcome->decision)
     if UserRole == "trustor":
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
         decision_time = glb.ABS_CLOCK.getTime()
@@ -114,35 +128,58 @@ def normal_trial(TrialIdx, BlockIdx, UserRole, CpuRole, GameLogic, CpuIndex, Par
         "cpu_response": cpu_response,
     }
 
-def normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName):
+
+# FUNCTION USED BY normal_trial() FOR ALLOWING THE PARTICIPANT TO DECIDE ON WHETHER TO KEEP OR INVEST
+# Arguments:
+#   GameLogic:      The parameters and logic that will be followed in this trial
+#   CpuIndex:       The index of the Cpu
+#   PartnerImage:   The filename of the image that represents the CPU/partner
+#   PartnerName:    The personalized name given to the CPU/partner
+# Returns:
+#   Dictionary containing: The user's decision and the amount of money involved
+def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
     # Display the same amount for both keep and invest
-        currentBalanceDisplay = GameLogic.trustor_balances[CpuIndex]
-        keepButtonText = f"Keep ${currentBalanceDisplay}"
-        investButtonText = f"Invest ${currentBalanceDisplay}"
+    currentBalanceDisplay = GameLogic.trustor_balances[CpuIndex]
+    keepButtonText = f"Keep ${currentBalanceDisplay}"
+    investButtonText = f"Invest ${currentBalanceDisplay}"
 
-        stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos= (0,0.5), Size=(0.8,0.8))
-        stim.draw_text(f"Partner: {PartnerName}", Pos=(0,0))
-        stim.draw_rect(FillColor=(0,0,255), LineColor=(0,0,255), Width=0.6, Height=0.2, Pos=(-0.4, -0.5))
-        stim.draw_text(keepButtonText, Pos=(-0.4, -0.5), Height=60)
-        stim.draw_rect(FillColor=(0,0,255), LineColor=(0,0,255), Width=0.6, Height=0.2, Pos=(0.4, -0.5))
-        stim.draw_text(investButtonText, Pos=(0.4, -0.5), Height=60)
-        stim.draw_text("Press '1' to Keep", Pos=(-0.4, -0.7), Height=54)
-        stim.draw_text("Press '3' to Invest", Pos=(0.4, -0.7), Height=54)
-        glb.UI_WIN.flip()
+    # Draw the prompt
+    stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos= (0,0.5), Size=(0.8,0.8)) # Draw the image of the partner
+    stim.draw_text(f"Partner: {PartnerName}", Pos=(0,0), Height=50)                                               # Draw the name of the partner
+    stim.draw_rect(FillColor=(0,0,255), LineColor=(0,0,255), Width=0.6, Height=0.2, Pos=(-0.4, -0.5))             # Draw the box for the keep text
+    stim.draw_text(keepButtonText, Pos=(-0.4, -0.5), Height=60)                                                   # Draw the keep text
+    stim.draw_rect(FillColor=(0,0,255), LineColor=(0,0,255), Width=0.6, Height=0.2, Pos=(0.4, -0.5))              # Draw the box for the invest text
+    stim.draw_text(investButtonText, Pos=(0.4, -0.5), Height=60)                                                  # Draw the invest text
+    stim.draw_text("Press '1' to Keep", Pos=(-0.4, -0.7), Height=54)                                              # Draw the button 1 text
+    stim.draw_text("Press '3' to Invest", Pos=(0.4, -0.7), Height=54)                                             # Draw the button 3 text
+    glb.UI_WIN.flip()
 
-        keys = event.waitKeys(keyList=['1', '3', 'escape'])
-        if 'escape' in keys:
-            core.quit()
-        decision = 'keep' if '1' in keys else 'invest'
+    # Wait for the key to be pressed
+    keys = event.waitKeys(keyList=['1', '3', 'escape'])
+    if 'escape' in keys:
+        core.quit()
+    decision = 'keep' if '1' in keys else 'invest'
         
-        # Call the game logic with the actual decision
-        amount_involved = GameLogic.trustor_decision(decision, CpuIndex)
-        return {"choice": decision, "amount": amount_involved}
+    # Call the game logic with the actual decision
+    amount_involved = GameLogic.trustor_decision(decision, CpuIndex)
 
-def normal_outcome_phase(DecisionData, GameLogic, CpuIndex, PartnerName):
+    return {"choice": decision, "amount": amount_involved}
+
+
+# FUNCTION USED BY normal_trial() FOR DISPLAYING THE OUTCOME OF THE PARTICIPANT'S OR CPU'S DECISION
+# Arguments:
+#   DecisionData:   The data for the participant's OR CPU's decision
+#   GameLogic:      The parameters and logic that will be followed in this trial
+#   CpuIndex:       The index of the Cpu
+#   PartnerName:    The personalized name given to the CPU/partner
+# Returns:
+#   Dictionary containing: The user's decision and the amount of money involved
+def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:int):
+    # Extract the decision data
     decision = DecisionData["choice"]
     amountGiven = DecisionData["amount"]
     
+    # Calculate the outcome message
     outcomeMessage = ...
     if decision == "keep":
         outcomeMessage = f"You kept ${amountGiven}"
@@ -156,9 +193,11 @@ def normal_outcome_phase(DecisionData, GameLogic, CpuIndex, PartnerName):
                 outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})"
 
     # Draw outcome display
-    stim.draw_rect(FillColor=(0,0,255), Width=0.99, Height=0.4, Pos=(0,0))
-    stim.draw_text(outcomeMessage, Pos=(0,0), Height=80)
+    stim.draw_rect(FillColor=(0,0,255), Width=0.99, Height=0.4, Pos=(0,0))  # Draw the box for the outcome text
+    stim.draw_text(outcomeMessage, Pos=(0,0), Height=80)                    # Draw the outcome text
     glb.UI_WIN.flip()
+    
+    # Wait
     core.wait(2)
 
     return {
@@ -168,9 +207,17 @@ def normal_outcome_phase(DecisionData, GameLogic, CpuIndex, PartnerName):
     }
 
 
-def lottery_trial(PartnerNames):
-    """Run the lottery trial, presenting the option to play the lottery."""
-    ## SUGGESTION STEP
+
+
+# FUNCTION USED TO SIMULATE A LOTTERY TRIAL
+# Arguments:
+#   PartnerNames:       The names of all the partners
+# Returns:
+#   Dictionary containing: trial type, user's response, suggestion text
+YES_POS = (-0.3, -0.5)
+NO_POS = (0.3, -0.5)
+def lottery_trial(PartnerNames:str):
+    # SUGGESTION STEP - GENERATE A RANDOM SUGGESTION WITH A RANDOM PARTNER
     suggestionText = ...
     suggestionType = "partner" if random.random() < 0.5 else "self"
     if suggestionType == "partner":
@@ -180,22 +227,19 @@ def lottery_trial(PartnerNames):
     else:
         suggestionText = "You decide whether to enter the lottery."
 
-    """Present partner suggestion (if applicable) and lottery decision prompt, and record choice."""
     response = None
 
-    # DECISION PHASE
-    yesRectPos = (-0.3, -0.5)
-    noRectPos = (0.3, -0.5)
-    stim.draw_image("Images/slot_machine.jpg", Pos=(0, 0.5), Size=(0.5, 0.8))
-    stim.draw_text(suggestionText, Pos=(0, -.05), Color=(255,255,255))
-    stim.draw_text("Do you want to play the lottery?", Pos=(0,-0.3), Height=50)
-    stim.draw_rect(FillColor=(0,0,255), Pos=yesRectPos, Width=0.3, Height=0.15)
-    stim.draw_text("Yes", Pos= yesRectPos, Height=54)                         # Yes button
-    stim.draw_rect(FillColor=(0,0,255), Pos=noRectPos, Width=0.3, Height=0.15)
-    stim.draw_text("No", Pos=noRectPos, Height=54)
-    stim.draw_text("Press 1 for Yes", Pos=(-0.3, -0.67), Height=43)
-    stim.draw_text("Press 3 for No", Pos=(0.3, -0.67), Height=43)
-    glb.UI_WIN.flip()                           # Display all elements
+    # DECISION PHASE - DRAW THE PROMPT FOR THE DECISION
+    stim.draw_image("Images/slot_machine.jpg", Pos=(0, 0.5), Size=(0.5, 0.8))       # Draw the slot machine
+    stim.draw_text(suggestionText, Pos=(0, -.05), Color=(255,255,255))              # Draw the partner's/CPU's random suggestion text
+    stim.draw_text("Do you want to play the lottery?", Pos=(0,-0.3), Height=50)     # Draw the question prompt text
+    stim.draw_rect(FillColor=(0,0,255), Pos=YES_POS, Width=0.3, Height=0.15)        # Draw the box for the 'Yes' prompt
+    stim.draw_text("Yes", Pos= YES_POS, Height=54)                                  # Draw the 'Yes' prompt
+    stim.draw_rect(FillColor=(0,0,255), Pos=NO_POS, Width=0.3, Height=0.15)         # Draw the box for the 'No' prompt
+    stim.draw_text("No", Pos=NO_POS, Height=54)                                     # Draw the 'No' prompt
+    stim.draw_text("Press 1 for Yes", Pos=(-0.3, -0.67), Height=43)                 # Draw the button 1 instructions
+    stim.draw_text("Press 3 for No", Pos=(0.3, -0.67), Height=43)                   # Draw the button 3 instructions
+    glb.UI_WIN.flip()                        
 
     # Wait for user input
     keys = event.waitKeys(keyList=['1', '3', 'escape'])
@@ -211,241 +255,11 @@ def lottery_trial(PartnerNames):
         outcomeMessage = "You chose not to play the lottery."
 
     # OUTCOME PHASE
-    stim.draw_rect(FillColor=(0,0,255), Width=0.9, Height=0.4, Pos=(0,0))
-    stim.draw_text(outcomeMessage, Height=54)
+    stim.draw_rect(FillColor=(0,0,255), Width=0.9, Height=0.4, Pos=(0,0))       # Draw a box for the text     
+    stim.draw_text(outcomeMessage, Height=54)                                   # Draw the ourcome text
     glb.UI_WIN.flip()
+
+    # Wait
     core.wait(2)
 
     return {"trial_type": "lottery", "response": response, "suggestion_text":suggestionText}
-
-# class TrustGameTrial:
-#     def __init__(self, UI_WIN, PARAMETERS, partner_name, game_logic, cpu_index=0, user_role="trustor", cpu_role="trustee", trialIdx=0, blockIdx=0, partner_image=None):
-#         self.UI_WIN = UI_WIN
-#         self.PARAMETERS = PARAMETERS
-#         self.partner_name = partner_name
-#         self.game_logic = game_logic
-#         self.cpu_index = cpu_index
-#         self.user_role = user_role
-#         self.cpu_role = cpu_role
-#         self.trialIdx = trialIdx
-#         self.blockIdx = blockIdx
-#         self.partner_image = partner_image
-#         self.intro_displayed = False
-#         self.setup_stimuli()
-
-#     def setup_stimuli(self):
-#         if not hasattr(self, 'partner_name_text'):
-#             self.partner_name_text = create_text_stimuli(
-#                 self.UI_WIN, self.PARAMETERS, f"Partner: {self.partner_name}", pos=(0, 0)
-#             )
-#         if not hasattr(self, 'trust_slider'):
-#             self.trust_slider, self.instructions_text, self.not_trustworthy_label, self.neutral_label, self.trustworthy_label = create_trust_slider(self.UI_WIN)
-
-#         if self.game_logic is not None:
-#             if not hasattr(self, 'keep_button_rect'):
-#                 self.keep_button_rect, self.keep_button_text = create_button(
-#                     self.UI_WIN, label=f"Keep ${self.game_logic.trustor_balances[self.cpu_index]}", pos=(-0.4, -0.5)
-#                 )
-#             if not hasattr(self, 'invest_button_rect'):
-#                 self.invest_button_rect, self.invest_button_text = create_button(
-#                     self.UI_WIN, label=f"Invest ${self.game_logic.trustor_balances[self.cpu_index]}", pos=(0.4, -0.5)
-#                 )
-
-#         if not hasattr(self, 'outcome_text'):
-#             self.outcome_text = create_text_stimuli(self.UI_WIN, self.PARAMETERS, text_content="", pos=(0, 0))
-#         if not hasattr(self, 'decision_instruction_text_1'):
-#             self.decision_instruction_text_1 = create_text_stimuli(
-#                 self.UI_WIN, self.PARAMETERS, "Press '1' to Keep", pos=(-.4, -.7)
-#             )
-#         if not hasattr(self, 'decision_instruction_text_3'):
-#             self.decision_instruction_text_3 = create_text_stimuli(
-#                 self.UI_WIN, self.PARAMETERS, "Press '3' to Invest", pos=(.4, -.7)
-#             )
-#         if not hasattr(self, 'response_recorded_text'):
-#             self.response_recorded_text = create_text_stimuli(
-#                 self.UI_WIN, self.PARAMETERS, "Response noted.", pos=(0, -0.9)
-#             )
-
-#     def show_block_ranking(self):
-#         self.trust_slider.reset()
-#         response = None
-#         while response is None:
-#             self.partner_image.draw()
-#             self.partner_name_text.draw()
-#             self.instructions_text.draw()
-#             self.trust_slider.draw()
-#             self.not_trustworthy_label.draw()
-#             self.neutral_label.draw()
-#             self.trustworthy_label.draw()
-#             self.UI_WIN.flip()
-
-#             keys = event.getKeys(keyList=['return'])
-#             if 'return' in keys:
-#                 response = self.trust_slider.getRating() or 5
-#                 markEvent("BlockEndRanking", rating=response, time=glb.ABS_CLOCK.getTime())
-
-#         for _ in range(30):
-#             self.partner_image.draw()
-#             self.partner_name_text.draw()
-#             self.trust_slider.draw()
-#             self.not_trustworthy_label.draw()
-#             self.neutral_label.draw()
-#             self.trustworthy_label.draw()
-#             self.response_recorded_text.draw()
-#             self.UI_WIN.flip()
-
-#         return response
-
-#     def show_welcome(self):
-#         welcome_text = TextStim(
-#             win=self.UI_WIN,
-#             text="Welcome to the Trust Game!\n\nIn this game, you'll interact with multiple partners.\n\n"
-#                 "Choose to keep or invest your money with your partner, and see if they invest back!\n\n"
-#                 "Press 'Enter' to continue.",
-#             pos=(0, 0),
-#             height=0.1,
-#             wrapWidth=1.5
-#         )
-
-#         # Draw welcome text and wait for "Enter" key
-#         response = None
-#         while response is None:
-#             welcome_text.draw()
-#             self.UI_WIN.flip()
-#             keys = event.getKeys(keyList=['return'])
-#             if 'return' in keys:
-#                 response = True
-
-#         # Show confirmation message before starting
-#         confirmation_text = TextStim(
-#             win=self.UI_WIN,
-#             text="Let's begin!",
-#             pos=(0, 0),
-#             height=0.4
-#         )
-        
-#         for _ in range(30):  # Display for a short duration
-#             confirmation_text.draw()
-#             self.UI_WIN.flip()
-#         self.UI_WIN.flip()  # Clear screen after confirmation
-#         core.wait(1)
-
-#     def show_intro(self):
-#         if self.intro_displayed:
-#             return
-#         self.intro_displayed = True
-
-#         self.trust_slider.reset()
-#         response = None
-#         while response is None:
-#             self.partner_image.draw()
-#             self.partner_name_text.draw()
-#             self.instructions_text.draw()
-#             self.trust_slider.draw()
-#             self.not_trustworthy_label.draw()
-#             self.neutral_label.draw()
-#             self.trustworthy_label.draw()
-#             self.UI_WIN.flip()
-
-#             keys = event.getKeys(keyList=['return'])
-#             if 'return' in keys:
-#                 response = self.trust_slider.getRating() or 5
-#                 markEvent("IntroSlider", rating=response, time=glb.ABS_CLOCK.getTime())
-
-#         for _ in range(30):
-#             self.partner_image.draw()
-#             self.partner_name_text.draw()
-#             self.trust_slider.draw()
-#             self.not_trustworthy_label.draw()
-#             self.neutral_label.draw()
-#             self.trustworthy_label.draw()
-#             self.response_recorded_text.draw()
-#             self.UI_WIN.flip()
-
-#         return response
-    
-#     def run_decision_phase(self):
-#         # Display the same amount for both keep and invest
-#         current_balance_display = self.game_logic.trustor_balances[self.cpu_index]
-#         self.keep_button_text.text = f"Keep ${current_balance_display}"
-#         self.invest_button_text.text = f"Invest ${current_balance_display}"
-
-#         self.partner_image.draw()
-#         self.partner_name_text.draw()
-#         self.keep_button_rect.draw()
-#         self.keep_button_text.draw()
-#         self.invest_button_rect.draw()
-#         self.invest_button_text.draw()
-#         self.decision_instruction_text_1.draw()
-#         self.decision_instruction_text_3.draw()
-#         self.UI_WIN.flip()
-
-#         keys = event.waitKeys(keyList=['1', '3', 'escape'])
-#         if 'escape' in keys:
-#             core.quit()
-#         decision = 'keep' if '1' in keys else 'invest'
-        
-#         # Call the game logic with the actual decision
-#         amount_involved = self.game_logic.trustor_decision(decision, self.cpu_index)
-#         return {"choice": decision, "amount": amount_involved}
-
-#     def run_outcome_phase(self, decision_data):
-#         decision = decision_data["choice"]
-#         amount_given = decision_data["amount"]
-
-#         if decision == "keep":
-#             outcome_message = f"You kept ${amount_given}"
-#         else:
-#             returned_amount = self.game_logic.outcome_phase(amount_given, self.cpu_index)
-#             if returned_amount > 0:
-#                 outcome_message = f"{self.partner_name} returned ${returned_amount}"
-#             else:
-#                 outcome_message = f"{self.partner_name} kept the money"
-#                 if self.game_logic.trustor_balances[self.cpu_index] == self.game_logic.initial_money:
-#                     outcome_message += f" (Your balance was replenished to ${self.game_logic.initial_money})"
-
-#         # Draw outcome display
-#         trial_outcome_background = Rect(self.UI_WIN, width=0.99, height=0.4, fillColor='blue', pos=(0, 0))
-#         trial_outcome_background.draw()
-#         self.outcome_text.text = outcome_message
-#         self.outcome_text.draw()
-#         self.UI_WIN.flip()
-#         core.wait(2)
-
-#         return {
-#             "choice": decision,
-#             "amount_given": amount_given if decision == "invest" else 0,
-#             "amount_returned": returned_amount if decision == "invest" else 0
-#         }
-    
-
-
-
-#     def run_trial(self):
-#         glb.reset_clock()
-#         markEvent("trialStart", trialIdx=self.trialIdx, blockIdx=self.blockIdx)
-
-#         if self.user_role == "trustor":
-#             user_decision = self.run_decision_phase()
-#             decision_time = glb.ABS_CLOCK.getTime()
-#             markEvent("UserChoice", role=self.user_role, decision=user_decision["choice"], time=decision_time)
-
-#             cpu_response = self.run_outcome_phase(user_decision)
-#             outcome_time = glb.ABS_CLOCK.getTime()
-#             markEvent("OutcomeEnd", returned_amount=cpu_response["amount_returned"], time=outcome_time)
-            
-#         else:
-#             cpu_decision = {"choice": "give", "amount": self.game_logic.trustor_decision("give", self.cpu_index)}
-#             cpu_response = self.run_outcome_phase(cpu_decision)
-
-#             user_decision = self.run_decision_phase()
-#             markEvent("UserChoice", role=self.user_role, decision=user_decision["choice"])
-
-#         return {
-#             "trialIdx": self.trialIdx,
-#             "blockIdx": self.blockIdx,
-#             "user_role": self.user_role,
-#             "cpu_role": self.cpu_role,
-#             "user_decision": user_decision,
-#             "cpu_response": cpu_response,
-#         }
