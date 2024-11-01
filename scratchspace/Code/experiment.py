@@ -1,4 +1,4 @@
-import random
+import random, math
 import globals as glb
 import pandas as pd
 
@@ -7,9 +7,9 @@ from markEvent import markEvent
 from Class.game_logic import GameLogic
 
 def run_experiment():
-    allData = []
     allTrials = []
     allRankings = []
+    midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
 
     # Show welcome screen
     trial.show_welcome()
@@ -28,9 +28,10 @@ def run_experiment():
         blockRankings = []
 
         # Collect ratings at the start of Block 1, Block 5, and the end of Block 10
-        if blockIdx == 0 or blockIdx == 4:  # Start of Block 1 or Block 5
+        if blockIdx == 0 or blockIdx == midBlock:  # Start of Block 1 or Block 5
             for cpuIndex, partnerConfig in enumerate(partners):
-                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankInitial", cpuIndex)
+                eventType = "TrustRankInitial" if blockIdx == 0 else "TrustRankMiddle"
+                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], eventType, cpuIndex)
                 formatedData = format_data('Ranking', initialRating)
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)

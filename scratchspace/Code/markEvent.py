@@ -56,6 +56,10 @@ def markEvent(EventType: str, *args, **kwargs):
             eventName = f"Early Trust Ranking Started for CPU {args[0]}"
         case "TrustRankInitialEnd":
             eventName = f"Early Trust Ranking Ended for CPU {args[0]}"
+        case "TrustRankMiddleStart":
+            eventName = f"Middle Trust Ranking Started for CPU {args[0]}"
+        case "TrustRankMiddleEnd":
+            eventName = f"Middle Trust Ranking Ended for CPU {args[0]}"
         case "TrustRankFinalStart":
             eventName = f"Late Trust Ranking Started for CPU {args[0]}"
         case "TrustRankFinalEnd":
