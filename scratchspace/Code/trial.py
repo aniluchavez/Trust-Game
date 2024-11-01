@@ -11,7 +11,7 @@ from markEvent import markEvent
 def show_welcome():
     """Display welcome message and game instructions at the start of the experiment."""
     welcomeText = "Welcome to the Trust Game Experiment!\n\nIn this game, you'll be interacting with a partner that prerecorded their responses.\n\n" +\
-                  "You are the trustor and start with $1 in your account.\n"+\
+                  "You are the trustor.\n"+\
                   "You can choose to keep or invest money, and your partner may choose to share up to 3X your initial investment or keep it all for themselves.\n\n"+\
                   "Press 'Enter' to continue."
     stim.draw_text(welcomeText, Pos=(0, 0), Height=40)
@@ -50,6 +50,8 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str):
 # FUNCTION FOR MAIN TRIAL SEQUENCE
 def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
     glb.reset_clock()
+    GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
+    
     markEvent("trialStart", trialIdx=TrialIdx, blockIdx=BlockIdx)
     if UserRole == "trustor":
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
@@ -73,31 +75,29 @@ def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogi
     }
 
 
+
 # FUNCTION TO PROCESS USER'S DECISION
 def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
-    # Get the fresh pot amount for this specific trial
-    fresh_pot = GameLogic.get_fresh_pot()  # Assign a fresh pot for this trial
+    # Initialize a fresh pot for this specific trial
+    fresh_pot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
     
-    # Set up display text for "Keep" and "Invest" options using the fresh pot amount
     keepButtonText = f"Keep ${fresh_pot}"
     investButtonText = f"Invest ${fresh_pot}"
 
-    # Draw the partner image, partner name, and options for keep and invest
     stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.8, 0.8))
     stim.draw_text(f"Partner: {PartnerName}", Pos=(0, 0), Height=50)
     stim.draw_rect(FillColor=(0, 0, 255), LineColor=(0, 0, 255), Width=0.6, Height=0.2, Pos=(-0.4, -0.5))
     stim.draw_text(keepButtonText, Pos=(-0.4, -0.5), Height=60)
     stim.draw_rect(FillColor=(0, 0, 255), LineColor=(0, 0, 255), Width=0.6, Height=0.2, Pos=(0.4, -0.5))
     stim.draw_text(investButtonText, Pos=(0.4, -0.5), Height=60)
-    stim.draw_text("Press '1' to Keep", Pos=(-0.4, -0.7), Height=54)
-    stim.draw_text("Press '3' to Invest", Pos=(0.4, -0.7), Height=54)
+    stim.draw_text("Press 'F' to Keep", Pos=(-0.4, -0.7), Height=54)
+    stim.draw_text("Press 'J' to Invest", Pos=(0.4, -0.7), Height=54)
     glb.UI_WIN.flip()
 
-    keys = event.waitKeys(keyList=['1', '3', 'escape'])
+    keys = event.waitKeys(keyList=['f', 'j', 'escape'])
     if 'escape' in keys:
         core.quit()
-    decision = 'keep' if '1' in keys else 'invest'
-    # Call the game logic with the actual decision using the fresh pot amount
+    decision = 'keep' if 'f' in keys else 'invest'
     amount_involved = GameLogic.trustor_decision(decision, CpuIndex)
 
     return {"choice": decision, "amount": amount_involved}
@@ -114,8 +114,8 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
     else:
         returned_amount = GameLogic.outcome_phase(amountGiven, CpuIndex)
         outcomeMessage = f"{PartnerName} returned ${returned_amount}" if returned_amount > 0 else f"{PartnerName} kept the money"
-        if GameLogic.trustor_balances[CpuIndex] == GameLogic.initial_money:
-            outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})"
+        #if GameLogic.trustor_balances[CpuIndex] == GameLogic.initial_money:
+        #    outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})" #may need to remove this, no need for rep
 
     stim.draw_rect(FillColor=(0, 0, 255), Width=0.99, Height=0.4, Pos=(0, 0))
     stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
@@ -143,19 +143,19 @@ def lottery_trial(PartnerNames:str):
     stim.draw_text("Yes", Pos=(-0.3, -0.5), Height=54)
     stim.draw_rect(FillColor=(0,0,255), Pos=(0.3, -0.5), Width=0.3, Height=0.15)
     stim.draw_text("No", Pos=(0.3, -0.5), Height=54)
-    stim.draw_text("Press 1 for Yes", Pos=(-0.3, -0.67), Height=43)
-    stim.draw_text("Press 3 for No", Pos=(0.3, -0.67), Height=43)
+    stim.draw_text("Press F for Yes", Pos=(-0.3, -0.67), Height=43)
+    stim.draw_text("Press J for No", Pos=(0.3, -0.67), Height=43)
     glb.UI_WIN.flip()                        
 
-    keys = event.waitKeys(keyList=['1', '3', 'escape'])
+    keys = event.waitKeys(keyList=['f', 'j', 'escape'])
     outcomeMessage = 'ABORT'
     if 'escape' in keys:
         core.quit()
-    elif '1' in keys:
+    elif 'f' in keys:
         response = "yes"
         wonLottery = random.randint(0, 1) == 1
         outcomeMessage = "You won the lottery!" if wonLottery else "You did not win the lottery."
-    elif '3' in keys:
+    elif 'j' in keys:
         response = "no"
         outcomeMessage = "You chose not to play the lottery."
 
