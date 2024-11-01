@@ -8,7 +8,7 @@ from markEvent import markEvent
 
 
 # FUNCTION THAT SHOWS THE WELCOME MESSAGE
-def show_welcome1():
+def show_welcome():
     """Display welcome message and game instructions at the start of the experiment."""
     welcomeText = "Welcome to the Trust Game Experiment!\n\nIn this game, you'll be interacting with a partner that prerecorded their responses.\n\n" +\
                   "You are the trustor.\n"+\

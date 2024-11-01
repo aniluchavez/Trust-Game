@@ -9,7 +9,7 @@ def run_experiment():
     allData = []
 
     # Show welcome screen
-    trial.show_welcome1()
+    trial.show_welcome()
     
     # Experiment structure from parameters
     numBlocks, numTrialsPerBlock = glb.PARAMETERS.get_block_info()
