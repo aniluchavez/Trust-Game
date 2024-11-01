@@ -8,17 +8,13 @@ prefs.hardware['audioLib'] = ['sounddevice', 'pygame']
 prefs.hardware['audioLatencyMode'] = '3'
 
 class Parameters:
-    # __slots__ = ('screen', 'window', 'text','exp', 'block', 'stimuli', 'timing', 'blocks', 'trustworthy_weights', 'untrustworthy_weights')
     def __init__(self):
         # Screen, text, and window configurations
         self.screen = {'number': 1, 'fullscr': True}
-        self.window = {'size': [1024, 768],  'bgColor': [122,122,122], 'units': 'norm'}
+        self.window = {'size': [1024, 768], 'bgColor': [122,122,122], 'units': 'norm'}
         
-        self.text   = {'font': 'Arial', 'size': 24, 'color': [255, 255, 255]}  # Simplified font to 'Arial'
+        self.text = {'font': 'Arial', 'size': 24, 'color': [255, 255, 255]}  # Simplified font to 'Arial'
         
-        # self.monitor = monitors.Monitor(name='testMonitor', width=30.0, distance=60.0)
-        # self.monitor.setSizePix([1024, 768])
-
         # Experiment structure and timing settings
         self.exp = {
             'numBlocks': 8,  # Number of blocks in the experiment
@@ -44,28 +40,27 @@ class Parameters:
         self.trustworthy_weights = {'low': 0.2, 'high': 0.8}
         self.untrustworthy_weights = {'low': 0.8, 'high': 0.2}
 
-        # Define interleaved blocks with equal sampling configuration for trials
+        # Define interleaved blocks with partners, including a neutral partner with no weights
         self.blocks = [
             {
                 "partners": [
                     {"name": "Kendall Christie", "image": "CFD-MF-300-002-N.jpg", "trustworthiness": "trustworthy", "weights": self.trustworthy_weights},
-                    # {"name": "Alex Smith", "image": "CFD-MM-302-010-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights}
-                    {"name": "Alex Smith", "image": "CFD-MM-302-002-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights}
+                    {"name": "Alex Smith", "image": "CFD-MM-302-010-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
+                    {"name": "Taylor Reed", "image": "CFD-MM-311-003-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
                 ],
                 "num_trials_per_partner": 12  # Total trials per partner per block (for interleaving)
             },
             {
                 "partners": [
-                    # {"name": "Michael Ham", "image": "CFD-MF-329-003-N.jpg", "trustworthiness": "trustworthy", "weights": {"low": 0.3, "high": 0.7}},
                     {"name": "Michael Ham", "image": "CFD-MF-329-001-N.jpg", "trustworthiness": "trustworthy", "weights": {"low": 0.3, "high": 0.7}},
-                    # {"name": "Chad Bacon", "image": "CFD-MM-311-007-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}}
-                    {"name": "Chad Bacon", "image": "CFD-MM-311-001-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}}
+                    {"name": "Chad Bacon", "image": "CFD-MM-311-001-N.jpg", "trustworthiness": "untrustworthy", "weights": {"low": 0.7, "high": 0.3}},
+                    {"name": "Jamie Lee", "image": "CFD-MM-313-001-N.jpg", "trustworthiness": "neutral", "weights": None}  # Another neutral partner
                 ],
                 "num_trials_per_partner": 12  # Customize trial count if required
             }
         ]
 
-        ### DO SOME COMPUTATIONS
+        # Size computation for text based on screen settings
         self.text.update({'sizeCM': self.text['size']*0.0352777778})
 
     def get_block_info(self):
@@ -111,15 +106,3 @@ class Parameters:
         if not dlg.OK:
             core.quit()  # Exit if user cancels the dialog
         return expInfo
-
-    # def create_window(self):
-    #     """Creates the PsychoPy window with consistent parameters."""
-    #     self.UI_WIN = visual.Window(
-    #         size=self.window['size'],
-    #         fullscr=self.window['fullscr'],
-    #         units=self.window['units'],
-    #         color=self.screen['bgColor'],
-    #         colorSpace='rgb',
-    #         monitor=self.monitor  # Using explicit monitor settings
-    #     )
-    #     return self.UI_WIN
