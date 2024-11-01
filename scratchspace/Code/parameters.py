@@ -25,7 +25,7 @@ class Parameters:
             'outputDir': 'data'  # Output directory for saving data
         }
         self.block = {
-            'numTrials': 48  # Total number of trials in each block
+            'numTrials': 2  # Total number of trials in each block
         }
         self.timing = {
             'photodiode' : 0.25,

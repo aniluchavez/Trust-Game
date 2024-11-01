@@ -27,6 +27,7 @@ INSTRUCTIONS_TEXT = "Please rate the trustworthiness of your partner on the scal
 def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuIndex:int):
     stim.SLIDER.reset()
     response = None
+    responseTime = -1
     partnerImageName = path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage)
     markEvent(f'{EventType}Start', CpuIndex)
     glb.REL_CLOCK.reset()
@@ -43,19 +44,25 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         glb.UI_WIN.flip()
         keys = event.getKeys(keyList=['return'])
         if 'return' in keys:
+            responseTime = glb.REL_CLOCK.getTime()
             response = stim.SLIDER.getRating() or 5
-            markEvent(EventType, rating=response, time=glb.ABS_CLOCK.getTime())
+            # markEvent(EventType, rating=response, time=glb.ABS_CLOCK.getTime())
     stim.draw_text("Response noted.", Pos=(0, -0.9), Height=60)
     glb.UI_WIN.flip()
 
     markEvent(f'{EventType}End', CpuIndex)
     core.wait(3)
-    return response
+    return {'type': EventType,
+            'partner': PartnerName,
+            'ranking': response,
+            'response_time': responseTime
+            }
+    # return response
 
 
 # FUNCTION FOR MAIN TRIAL SEQUENCE
 def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
-    glb.reset_clock()
+    # glb.reset_clock()
     GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
     
     markEvent("trialStart", TrialIdx, BlockIdx, 'trust')
@@ -63,24 +70,34 @@ def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogi
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
         decision_time = glb.ABS_CLOCK.getTime()
         # markEvent("UserChoice", role=UserRole, decision=userDecision["choice"], time=decision_time)
-        cpu_response = normal_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
+        cpuResponse = normal_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
         outcome_time = glb.ABS_CLOCK.getTime()
         # markEvent("OutcomeEnd", returned_amount=cpu_response["amount_returned"], time=outcome_time)
     else:
         cpuDecision = {"choice": "give", "amount": GameLogic.trustor_decision("give", CpuIndex)}
-        cpu_response = normal_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
+        cpuResponse = normal_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
         # markEvent("UserChoice", role=UserRole, decision=userDecision["choice"])
     
     markEvent("trialEnd", TrialIdx, BlockIdx, 'trust')
     return {
-        "trialIdx": TrialIdx,
-        "blockIdx": BlockIdx,
-        "user_role": UserRole,
-        "cpu_role": CpuRole,
-        "user_decision": userDecision,
-        "cpu_response": cpu_response,
+        "trial_type": f"Trust-{UserRole}",
+        "response": userDecision['decision'],
+        "partner": f'{PartnerName}-{CpuRole}',
+        "outcome": cpuResponse,
+        "response_time": userDecision['time'],
+        "misc_info": f"${userDecision['amount']}"
     }
+    #  return {
+    #     "trialIdx": TrialIdx,
+    #     "blockIdx": BlockIdx,
+    #     "user_role": UserRole,
+    #     "cpu_role": CpuRole,
+    #     "response": userDecision['decision'],
+    #     "outcome": cpuResponse,
+    #     "trial_type": "Trust",
+    #     "partner": PartnerName,
+    # }
 
 
 
@@ -97,8 +114,10 @@ def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName
     norm_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
     core.wait(glb.PARAMETERS.timing['photodiode'])
     norm_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
-
+    
+    glb.REL_CLOCK.reset()
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
+    responseTime = glb.REL_CLOCK.getTime()
     if 'escape' in keys:
         core.quit()
     decision = 'keep' if 'f' in keys else 'invest'
@@ -113,7 +132,7 @@ def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName
     amount_involved = GameLogic.trustor_decision(decision, CpuIndex)
 
     markEvent("DecisionEnd")
-    return {"choice": decision, "amount": amount_involved}
+    return {"choice": decision, "amount": amount_involved, 'time': responseTime}
 
 def norm_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonText, Highlight=None):
     keepLine = (255,255,255) if Highlight == 1 else (0, 0, 255)
@@ -136,12 +155,16 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
 
     markEvent("OutcomeStart")
 
+    outcomeMessage = ...
+    outcome = ...
     if decision == "keep":
         outcomeMessage = f"You kept ${amountGiven}"
+        outcome = 'No Deal'
         returned_amount = 0
     else:
         returned_amount = GameLogic.outcome_phase(amountGiven, CpuIndex)
         outcomeMessage = f"{PartnerName} returned ${returned_amount}" if returned_amount > 0 else f"{PartnerName} kept the money"
+        outcome = 'Shared' if returned_amount > 0 else 'Kept'
         #if GameLogic.trustor_balances[CpuIndex] == GameLogic.initial_money:
         #    outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})" #may need to remove this, no need for rep
 
@@ -157,17 +180,20 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
     markEvent("OutcomeEnd")
 
     core.wait(2)
-    return {
-        "choice": decision,
-        "amount_given": amountGiven if decision == "invest" else 0,
-        "amount_returned": returned_amount if decision == "invest" else 0
-    }
+    return outcome
+    # return {
+    #     "choice": decision,
+    #     "amount_given": amountGiven if decision == "invest" else 0,
+    #     "amount_returned": returned_amount if decision == "invest" else 0,
+    #     'outcome': 
+    # }
 
 
 # FUNCTION USED TO SIMULATE A LOTTERY TRIAL
 def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     suggestionType = "partner" if random.random() < 0.5 else "self"
-    suggestionText = f"{random.choice(PartnerNames)} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
+    suggestionPartner = random.choice(PartnerNames)
+    suggestionText = f"{suggestionPartner} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
                      if suggestionType == "partner" else "You decide whether to enter the lottery."
 
     response = None
@@ -177,10 +203,13 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     stim.PHOTODIODE.draw()
     lot_decision_draw(suggestionText)   
     core.wait(glb.PARAMETERS.timing['photodiode'])
-    lot_decision_draw(suggestionText)              
+    lot_decision_draw(suggestionText)     
+    glb.REL_CLOCK.reset()         
 
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
+    responseTime = glb.REL_CLOCK.getTime()
     outcomeMessage = 'ABORT'
+    outcome = ...
     highlight=...
     if 'escape' in keys:
         core.quit()
@@ -188,10 +217,12 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         response = "yes"
         highlight = 1
         wonLottery = random.randint(0, 1) == 1
+        outcome = "Won" if wonLottery else "Lost"
         outcomeMessage = "You won the lottery!" if wonLottery else "You did not win the lottery."
     elif 'j' in keys:
         highlight = 2
         response = "no"
+        outcome = "Not Played"
         outcomeMessage = "You chose not to play the lottery."
     
     stim.PHOTODIODE.draw()
@@ -217,7 +248,8 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
 
     core.wait(2)
 
-    return {"trial_type": "lottery", "response": response, "suggestion_text": suggestionText}
+    return {"trial_type": "Lottery", "response": response, "partner": suggestionPartner, 
+            "misc_info": suggestionText, "outcome": outcome, 'response_time': responseTime}
 
 def lot_decision_draw(SuggestionText, Highlight=None):
     yesLine = (255,255,255) if Highlight == 1 else (0, 0, 255)
