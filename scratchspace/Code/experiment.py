@@ -7,53 +7,64 @@ from Class.game_logic import GameLogic
 
 def run_experiment():
     allData = []
-    trial.show_welcome()
+
+    # Show welcome screen
+    trial.show_welcome1()
     
+    # Experiment structure from parameters
     numBlocks, numTrialsPerBlock = glb.PARAMETERS.get_block_info()
-    partnerImages = {}  # Store preloaded images to avoid reloading
+    partners = glb.PARAMETERS.get_block_partners(0)  # Retrieve the consistent partners list
+    gameLogic = GameLogic(partners)  # Initialize GameLogic once for consistent partners
 
+    # Generate partner images only once, as partners are the same across blocks
+    partnerImages = {partner['name']: partner['image'] for partner in partners}
+
+    # Loop through each block
     for blockIdx in range(numBlocks):
-        cpuConfigs = glb.PARAMETERS.get_block_partners(blockIdx)
-        
-        # Initialize `GameLogic` once and update configuration each block if needed
-        if blockIdx == 0:
-            gameLogic = GameLogic(cpuConfigs, initial_money=1)
-        else:
-            gameLogic.update_partners(cpuConfigs)  # Hypothetical update function
+        # Collect ratings at the start of Block 1, Block 5, and the end of Block 10
+        if blockIdx == 0 or blockIdx == 4:  # Start of Block 1 or Block 5
+            for cpuIndex, partnerConfig in enumerate(partners):
+                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], f"Block{blockIdx+1}Rating")
+                allData.append({
+                    "blockIdx": blockIdx,
+                    "partner": partnerConfig["name"],
+                    "rating": initialRating,
+                    "rating_type": "initial" if blockIdx == 0 else "midpoint"
+                })
 
-        for partner in cpuConfigs:
-            if partner["name"] not in partnerImages:
-                partnerImages[partner["name"]] = partner["image"]  # Load once
+        # Generate the trial types for the current block
+        interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
+        print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
 
-        allInitialRatings = {}
-        for cpuIndex, partnerConfig in enumerate(cpuConfigs):
-            if partnerConfig["name"] not in allInitialRatings:
-                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "IntroSlider")
-                allInitialRatings[partnerConfig["name"]] = initialRating
-                allData.append({"blockIdx": blockIdx, "partner": partnerConfig["name"], "initial_rating": initialRating})
-
-        interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock)
-
+        # Run each trial based on the interleaved structure
         for trialIdx, trialType in enumerate(interleaved_trials):
             if trialType == "trust":
-                cpuIndex, partnerConfig = random.choice(list(enumerate(cpuConfigs)))
+                cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
                 trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, cpuIndex, 
                                                partnerImages[partnerConfig["name"]], partnerConfig["name"])
-                trialData["initial_rating"] = allInitialRatings[partnerConfig["name"]]
+                trialData["blockIdx"] = blockIdx
                 allData.append(trialData)
 
             elif trialType == "lottery":
                 lotteryData = trial.lottery_trial(list(partnerImages.keys()))
+                lotteryData["blockIdx"] = blockIdx
                 allData.append(lotteryData)
 
-        for cpuIndex, partnerConfig in enumerate(cpuConfigs):
-            endBlockRanking = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "BlockEndRanking")
-            allData.append({"blockIdx": blockIdx, "partner": partnerConfig["name"], "end_block_ranking": endBlockRanking})
+    # Collect final ratings at the end of Block 10
+    if blockIdx == 9:  # End of Block 10
+        for cpuIndex, partnerConfig in enumerate(partners):
+            finalRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "FinalRating")
+            allData.append({
+                "blockIdx": blockIdx,
+                "partner": partnerConfig["name"],
+                "rating": finalRating,
+                "rating_type": "final"
+            })
 
+    # Mark the end of the experiment and save data
     markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     save_data(allData)
     glb.UI_WIN.close()
-
 
 def save_data(data_records, filename="experiment_data"):
     import csv, os

@@ -8,7 +8,7 @@ from markEvent import markEvent
 
 
 # FUNCTION THAT SHOWS THE WELCOME MESSAGE
-def show_welcome():
+def show_welcome1():
     """Display welcome message and game instructions at the start of the experiment."""
     welcomeText = "Welcome to the Trust Game Experiment!\n\nIn this game, you'll be interacting with a partner that prerecorded their responses.\n\n" +\
                   "You are the trustor.\n"+\
@@ -29,7 +29,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str):
     response = None
     partnerImageName = path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage)
     while response is None:
-        stim.draw_image(partnerImageName, Pos=(0, 0.5), Size=(0.8, 0.8))
+        stim.draw_image(partnerImageName, Pos=(0, 0.5), Size=(0.6, 0.8))
         stim.draw_text(f"Partner: {PartnerName}", Height=50, Pos=(0, 0))
         stim.draw_text(INSTRUCTIONS_TEXT, Pos=(0, -0.3), Height=40)
         stim.SLIDER.draw()
@@ -84,7 +84,7 @@ def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName
     keepButtonText = f"Keep ${fresh_pot}"
     investButtonText = f"Invest ${fresh_pot}"
 
-    stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.8, 0.8))
+    stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.6 , 0.8))
     stim.draw_text(f"Partner: {PartnerName}", Pos=(0, 0), Height=50)
     stim.draw_rect(FillColor=(0, 0, 255), LineColor=(0, 0, 255), Width=0.6, Height=0.2, Pos=(-0.4, -0.5))
     stim.draw_text(keepButtonText, Pos=(-0.4, -0.5), Height=60)
@@ -136,9 +136,9 @@ def lottery_trial(PartnerNames:str):
                      if suggestionType == "partner" else "You decide whether to enter the lottery."
 
     response = None
-    stim.draw_image("Images/slot_machine.jpg", Pos=(0, 0.5), Size=(0.5, 0.8))
-    stim.draw_text(suggestionText, Pos=(0, -.05), Color=(255,255,255))
-    stim.draw_text("Do you want to play the lottery?", Pos=(0,-0.3), Height=50)
+    stim.draw_image("Images/slot_machine.jpg", Pos=(0, 0.5), Size=(0.4, 0.8))
+    stim.draw_text(suggestionText, Pos=(0, -.05), Height=55, Color=(255,255,255))
+    stim.draw_text("Do you want to play the lottery?", Pos=(0,-0.3), Height=55)
     stim.draw_rect(FillColor=(0,0,255), Pos=(-0.3, -0.5), Width=0.3, Height=0.15)
     stim.draw_text("Yes", Pos=(-0.3, -0.5), Height=54)
     stim.draw_rect(FillColor=(0,0,255), Pos=(0.3, -0.5), Width=0.3, Height=0.15)
