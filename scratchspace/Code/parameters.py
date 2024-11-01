@@ -45,8 +45,8 @@ class Parameters:
             {
                 "partners": [
                     {"name": "Kendall Christie", "image": "CFD-MF-300-002-N.jpg", "trustworthiness": "trustworthy", "weights": self.trustworthy_weights},
-                    {"name": "Alex Smith", "image": "CFD-MM-302-010-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
-                    {"name": "Taylor Reed", "image": "CFD-MM-311-003-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
+                    {"name": "Alex Smith", "image": "CFD-MM-321-021-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
+                    {"name": "Taylor Reed", "image": "CFD-MF-306-003-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
                 ],
                 "num_trials_per_partner": 12  # Total trials per partner per block (for interleaving)
             },
