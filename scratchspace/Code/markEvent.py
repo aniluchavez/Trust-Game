@@ -1,7 +1,7 @@
 import globals as glb
-# import matlab
+import matlab
 
-def markEvent(EventType: str, PARAMETERS=None, *args, **kwargs):
+def markEvent(EventType: str, *args, **kwargs):
     """
     Log events during the experiment with standardized event names and timing.
     
@@ -28,52 +28,52 @@ def markEvent(EventType: str, PARAMETERS=None, *args, **kwargs):
             eventName = "Task Ended Successfully"
         case "taskAbort":
             eventName = "Task Aborted"
+
         case "introStart":
             eventName = "Intro Started"
         case "introEnd":
             eventName = "Intro Ended"
+
         case "blockStart":
-            eventName = f"Block {kwargs.get('blockIdx', '')} Started"
+            eventName = f"Block {args[0]} Started"
         case "blockEnd":
-            eventName = f"Block {kwargs.get('blockIdx', '')} Ended"
+            eventName = f"Block {args[0]} Ended"
         case "trialStart":
-            eventName = f"Trial {kwargs.get('trialIdx', '')} in Block {kwargs.get('blockIdx', '')} Started"
+            eventName = f"Trial {args[0]} in Block {args[0]} Started"
         case "trialEnd":
-            eventName = f"Trial {kwargs.get('trialIdx', '')} in Block {kwargs.get('blockIdx', '')} Ended"
+            eventName = f"Trial {args[0]} in Block {args[1]} Ended"
+
         case "DecisionStart":
             eventName = "Decision Phase Started"
         case "DecisionEnd":
-            eventName = "Decision Phase Ended"
-        case "UserChoice":
-            eventName = f"User Made Choice {kwargs.get('choice', '')}"
+            eventName = f"Decision Phase Ended with user choice {args[0]}"
         case "OutcomeStart":
             eventName = "Outcome Phase Started"
         case "OutcomeEnd":
             eventName = "Outcome Phase Ended"
+
         case "TrustworthyRankStart":
-            eventName = f"Trustworthy Ranking Started {kwargs.get('rank', '')}"
+            eventName = f"Trustworthy Ranking Started for CPU {args[0]}"
         case "TrustworthyRankEnd":
-            eventName = f"Trustworthy Ranking Ended {kwargs.get('rank', '')}"
+            eventName = f"Trustworthy Ranking Ended for CPU {args[0]}"
+
         case _:
             eventName = "UNKNOWN EVENT"
 
-    # Append the event and time to PARAMETERS' events list, if provided
-    # if PARAMETERS:
-    #     PARAMETERS.events.append((eventName, eventTime))
     glb.EVENTS.append((eventName, eventTime))
 
     # Additional environment-specific handling if needed
-    # if PARAMETERS and PARAMETERS.ID.get('expEnv') == "BCM-EMU":
-    #     match EventType:
-    #         case "taskStart":
-    #             onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout=1)
-    #             glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
-    #         case "taskStop":
-    #             glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout=0)
-    #         case "taskAbort":
-    #             glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout=0)
-    #         case _:
-    #             blackRockComment = glb.MATENG.cellstr([eventName])
-    #             glb.MATENG.workspace['blackRockComment'] = blackRockComment
-    #             glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout=0)
-    #             glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment, 'instance', onlineNSP(i)-1); end", nargout=0)
+    if glb.PARAMETERS.ID.get('expEnv') == "BCM-EMU":
+        match EventType:
+            case "taskStart":
+                onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout=1)
+                glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
+            case "taskStop":
+                glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout=0)
+            case "taskAbort":
+                glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout=0)
+            case _:
+                blackRockComment = glb.MATENG.cellstr([eventName])
+                glb.MATENG.workspace['blackRockComment'] = blackRockComment
+                glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout=0)
+                glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment, 'instance', onlineNSP(i)-1); end", nargout=0)
