@@ -24,7 +24,7 @@ def run_experiment():
         # Collect ratings at the start of Block 1, Block 5, and the end of Block 10
         if blockIdx == 0 or blockIdx == 4:  # Start of Block 1 or Block 5
             for cpuIndex, partnerConfig in enumerate(partners):
-                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], f"Block{blockIdx+1}Rating")
+                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankInitial", cpuIndex)
                 allData.append({
                     "blockIdx": blockIdx,
                     "partner": partnerConfig["name"],
@@ -46,14 +46,14 @@ def run_experiment():
                 allData.append(trialData)
 
             elif trialType == "lottery":
-                lotteryData = trial.lottery_trial(list(partnerImages.keys()))
+                lotteryData = trial.lottery_trial(list(partnerImages.keys()),trialIdx,blockIdx)
                 lotteryData["blockIdx"] = blockIdx
                 allData.append(lotteryData)
 
     # Collect final ratings at the end of Block 10
     if blockIdx == 9:  # End of Block 10
         for cpuIndex, partnerConfig in enumerate(partners):
-            finalRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "FinalRating")
+            finalRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankFinal", cpuIndex)
             allData.append({
                 "blockIdx": blockIdx,
                 "partner": partnerConfig["name"],
