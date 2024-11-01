@@ -27,6 +27,7 @@ def markEvent(EventType: str, *args, **kwargs):
         case "taskStop":
             eventName = "Task Ended Successfully"
         case "taskAbort":
+            print("ABORTING TASK")
             eventName = "Task Aborted"
 
         case "introStart":

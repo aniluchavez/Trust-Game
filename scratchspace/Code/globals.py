@@ -41,9 +41,8 @@ UI_WIN = visual.Window(fullscr=PARAMETERS.screen['fullscr'], screen = PARAMETERS
 PARAMETERS.window.update({'size': UI_WIN.size})
 
 EVENTS = []
-# Utility function to reset the clock
-def reset_clock():
-    ABS_CLOCK.reset()
+ABORT = False
 
-
-#removed stuff from eventmarkers because that is now handled by markEvents 
+def abort():
+    global ABORT
+    ABORT = True

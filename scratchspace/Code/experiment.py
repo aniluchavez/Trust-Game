@@ -26,72 +26,66 @@ def run_experiment():
     for blockIdx in range(numBlocks):
         blockTrials = []
         blockRankings = []
-
         # Collect ratings at the start of Block 1, Block 5, and the end of Block 10
         if blockIdx == 0 or blockIdx == midBlock:  # Start of Block 1 or Block 5
             for cpuIndex, partnerConfig in enumerate(partners):
+                if glb.ABORT: 
+                    break
                 eventType = "TrustRankInitial" if blockIdx == 0 else "TrustRankMiddle"
                 initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], eventType, cpuIndex)
                 formatedData = format_data('Ranking', initialRating)
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)
-                # allData.append({
-                #     "blockIdx": blockIdx,
-                #     "partner": partnerConfig["name"],
-                #     "rating": initialRating,
-                #     "rating_type": "initial" if blockIdx == 0 else "midpoint"
-                # })
 
-        # Generate the trial types for the current block
-        interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
-        print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
+        if not glb.ABORT:
+            # Generate the trial types for the current block
+            interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
+            print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
 
-        # Run each trial based on the interleaved structure
-        for trialIdx, trialType in enumerate(interleaved_trials):
-            trialData = ...
-            if trialType == "trust":
-                cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
-                trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, cpuIndex, 
-                                               partnerImages[partnerConfig["name"]], partnerConfig["name"])
-                # allData.append(format)
+            # Run each trial based on the interleaved structure
+            for trialIdx, trialType in enumerate(interleaved_trials):
+                trialData = ...
+                if trialType == "trust":
+                    cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
+                    trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, cpuIndex, 
+                                                   partnerImages[partnerConfig["name"]], partnerConfig["name"])
 
-            elif trialType == "lottery":
-                trialData = trial.lottery_trial(list(partnerImages.keys()),trialIdx,blockIdx)
-                # allData.append(lotteryData)
+                elif trialType == "lottery":
+                    trialData = trial.lottery_trial(list(partnerImages.keys()),trialIdx,blockIdx)
 
-            trialData["blockIdx"] = blockIdx+1
-            formatedData = format_data('Trial', trialData)
-            blockTrials.append(formatedData)
-            allTrials.append(formatedData)
+                trialData["blockIdx"] = blockIdx+1
+                formatedData = format_data('Trial', trialData)
+                blockTrials.append(formatedData)
+                allTrials.append(formatedData)
 
-        # Collect final ratings at the end of Block 10
-        if blockIdx == 9:  # End of Block 10
-            for cpuIndex, partnerConfig in enumerate(partners):
-                finalRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankFinal", cpuIndex)
-                formatedData = format_data('Ranking', finalRating)
-                blockRankings.append(formatedData)
-                allRankings.append(formatedData)
-                # allData.append({
-                #     "blockIdx": blockIdx,
-                #     "partner": partnerConfig["name"],
-                #     "rating": finalRating,
-                #     "rating_type": "final"
-                # })
+                if glb.ABORT: break
 
-        blockDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
-        blockDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
+        if not glb.ABORT:
+            # Collect final ratings at the end of Block 10
+            if blockIdx == 9:  # End of Block 10
+                for cpuIndex, partnerConfig in enumerate(partners):
+                    finalRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankFinal", cpuIndex)
+                    formatedData = format_data('Ranking', finalRating)
+                    blockRankings.append(formatedData)
+                    allRankings.append(formatedData)
+
+        blockTrialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+        blockTrialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
         
-        if len(blockTrials) > 0:
-            blockDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
-            blockDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
+        if len(blockRankings) > 0:
+            blockRankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+            blockRankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
+        
+        if glb.ABORT: break
 
     # Mark the end of the experiment and save data
-    markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
-    dataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
-    dataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
+    if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
+    
+    trialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+    trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
 
-    dataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
-    dataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
+    rankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+    rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
 
     eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
     eventDataFrame.to_excel(glb.PARAMETERS.outputDir+f'Event Data.xlsx')
