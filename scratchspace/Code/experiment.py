@@ -16,10 +16,10 @@ def run_experiment():
         cpuConfigs = glb.PARAMETERS.get_block_partners(blockIdx)
         
         # Initialize `GameLogic` once and update configuration each block if needed
-        if blockIdx == 0:
-            gameLogic = GameLogic(cpuConfigs, initial_money=1)
-        else:
-            gameLogic.update_partners(cpuConfigs)  # Hypothetical update function
+        # if blockIdx == 0:
+        gameLogic = GameLogic(cpuConfigs, initial_money=1)
+        # else:
+            # gameLogic.update_partners(cpuConfigs)  # Hypothetical update function
 
         for partner in cpuConfigs:
             if partner["name"] not in partnerImages:
@@ -28,7 +28,7 @@ def run_experiment():
         allInitialRatings = {}
         for cpuIndex, partnerConfig in enumerate(cpuConfigs):
             if partnerConfig["name"] not in allInitialRatings:
-                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "IntroSlider")
+                initialRating = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankInitial", cpuIndex)
                 allInitialRatings[partnerConfig["name"]] = initialRating
                 allData.append({"blockIdx": blockIdx, "partner": partnerConfig["name"], "initial_rating": initialRating})
 
@@ -43,11 +43,11 @@ def run_experiment():
                 allData.append(trialData)
 
             elif trialType == "lottery":
-                lotteryData = trial.lottery_trial(list(partnerImages.keys()))
+                lotteryData = trial.lottery_trial(list(partnerImages.keys()), trialIdx, blockIdx)
                 allData.append(lotteryData)
 
         for cpuIndex, partnerConfig in enumerate(cpuConfigs):
-            endBlockRanking = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "BlockEndRanking")
+            endBlockRanking = trial.show_trust_ranking(partnerImages[partnerConfig["name"]], partnerConfig["name"], "TrustRankFinal", cpuIndex)
             allData.append({"blockIdx": blockIdx, "partner": partnerConfig["name"], "end_block_ranking": endBlockRanking})
 
     markEvent("taskStop", PARAMETERS=glb.PARAMETERS)

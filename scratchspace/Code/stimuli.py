@@ -1,6 +1,10 @@
 from psychopy import visual
 import globals as glb
 
+# PHOTODIODE CODE
+PHOTODIODE = visual.Rect(glb.UI_WIN, fillColor='white', lineColor='white', width=0.5, height=0.5, pos=(-0.85, -0.75))
+
+
 # CODE FOR THE TEXT STIMULUS
 TEXT_CONV = glb.PARAMETERS.window['size'][1]/2
 # TEXT = visual.TextBox2(glb.UI_WIN, text="", font = glb.PARAMETERS.text['font'], letterHeight=glb.PARAMETERS.text['size']/TEXT_CONV, 

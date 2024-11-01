@@ -39,23 +39,27 @@ def markEvent(EventType: str, *args, **kwargs):
         case "blockEnd":
             eventName = f"Block {args[0]} Ended"
         case "trialStart":
-            eventName = f"Trial {args[0]} in Block {args[0]} Started"
+            eventName = f"Trial:{args[0]}-Block:{args[1]}-Type:{args[2]} Started"
         case "trialEnd":
-            eventName = f"Trial {args[0]} in Block {args[1]} Ended"
+            eventName = f"Trial:{args[0]}-Block:{args[1]}-Type:{args[2]} Ended"
 
         case "DecisionStart":
             eventName = "Decision Phase Started"
         case "DecisionEnd":
-            eventName = f"Decision Phase Ended with user choice {args[0]}"
+            eventName = f"Decision Phase Ended"
         case "OutcomeStart":
             eventName = "Outcome Phase Started"
         case "OutcomeEnd":
             eventName = "Outcome Phase Ended"
 
-        case "TrustworthyRankStart":
-            eventName = f"Trustworthy Ranking Started for CPU {args[0]}"
-        case "TrustworthyRankEnd":
-            eventName = f"Trustworthy Ranking Ended for CPU {args[0]}"
+        case "TrustRankInitialStart":
+            eventName = f"Early Trust Ranking Started for CPU {args[0]}"
+        case "TrustRankInitialEnd":
+            eventName = f"Early Trust Ranking Ended for CPU {args[0]}"
+        case "TrustRankFinalStart":
+            eventName = f"Late Trust Ranking Started for CPU {args[0]}"
+        case "TrustRankFinalEnd":
+            eventName = f"Late Trust Ranking Ended for CPU {args[0]}"
 
         case _:
             eventName = "UNKNOWN EVENT"

@@ -1,7 +1,10 @@
-from psychopy import core, gui, data, prefs, visual, monitors
+import random, os
 from numpy.random import randint
-import os
-import random
+from datetime import datetime
+import tkinter as tk
+from tkinter import ttk, messagebox as tkm
+
+from psychopy import core, gui, data, prefs, visual, monitors
 
 # Set hardware preferences for PsychoPy
 prefs.hardware['audioLib'] = ['sounddevice', 'pygame']
@@ -17,6 +20,7 @@ class Parameters:
         
         # Experiment structure and timing settings
         self.exp = {
+            'name'     : "TrustGame",  # A name for the task to be used in filenames
             'numBlocks': 8,  # Number of blocks in the experiment
             'outputDir': 'data'  # Output directory for saving data
         }
@@ -24,6 +28,7 @@ class Parameters:
             'numTrials': 24  # Total number of trials in each block
         }
         self.timing = {
+            'photodiode' : 0.25,
             'decisionDuration': 3,  # Decision phase duration (in seconds)
             'intervalDuration': 12,  # Interval between decision and outcome
             'outcomeDuration': 1  # Outcome display duration
@@ -59,9 +64,12 @@ class Parameters:
                 "num_trials_per_partner": 12  # Customize trial count if required
             }
         ]
+        self.outputDir=''
+        self.ID={}
+        self.__launch_ID_UI()
 
         # Size computation for text based on screen settings
-        self.text.update({'sizeCM': self.text['size']*0.0352777778})
+        # self.text.update({'sizeCM': self.text['size']*0.0352777778})
 
     def get_block_info(self):
         """Returns the number of blocks and trials per block."""
@@ -106,3 +114,80 @@ class Parameters:
         if not dlg.OK:
             core.quit()  # Exit if user cancels the dialog
         return expInfo
+    
+    def generate_output_dest(self):
+        # Generate dynamic strings
+        now:str = datetime.now().strftime("%Y%m%d_%H%M") 
+        idName= self.ID['name']
+        expName= self.exp['name']
+        userPath = os.path.expanduser('~')
+        
+        # Generate the directories needed for the outputdirectory
+        outputDir = f'{userPath}/Documents/PatientData'
+        if not os.path.exists(outputDir): os.mkdir(outputDir)
+
+        outputDir += f'/{idName}'
+        if not os.path.exists(outputDir): os.mkdir(outputDir)
+
+        outputDir += f'/{expName}'
+        if not os.path.exists(outputDir): os.mkdir(outputDir)
+    
+        self.outputDir = outputDir + f'/{expName}__{idName}_{now}/'
+        if not os.path.exists(self.outputDir): os.mkdir(self.outputDir)
+    
+
+    def __launch_ID_UI(self):
+        idUI = tk.Tk() 
+        idUI.title('ID specifications')
+        rowNum = 0
+
+        # Label text for Name
+        nameLabel = ttk.Label(idUI, text = "Please enter the participant's name/refID:")
+        nameLabel.grid(row =rowNum, column=1, padx=10, sticky='W')
+        rowNum += 1
+
+        # Text Box for the Name
+        nameEntry = ttk.Entry(idUI, textvariable=tk.StringVar(), justify=tk.LEFT)
+        nameEntry.insert(0, 'TEST')
+        nameEntry.grid(row=rowNum, column=1, padx=10, sticky='W')
+        rowNum += 1
+
+        # Blank Space
+        ttk.Label(idUI).grid(row =rowNum, column=1)
+        rowNum += 1
+
+        # Label for exp Env Option
+        expEnvLabel = ttk.Label(idUI, text='Select Experimental Setup:')
+        expEnvLabel.grid(row=rowNum, column=1, padx=10, sticky='W')
+        rowNum += 1
+
+        # Combobox creation 
+        expEnvList = ttk.Combobox(idUI, width = 20, textvariable = tk.StringVar()) 
+        expEnvList['values'] = ('None', 'BCM-EMU') 
+        expEnvList.grid(row=rowNum, column=1, padx=10, sticky='W') 
+        expEnvList.current() 
+        rowNum += 1
+
+        # Blank Space
+        ttk.Label(idUI).grid(row =rowNum, column=1)
+        rowNum += 1
+
+        def save_button():
+            self.ID.update({'name': nameEntry.get(),
+                            'expEnv': expEnvList.get()})
+            shouldDestroy = True
+            for key in self.ID.keys():
+                if self.ID[key] == '': shouldDestroy = False
+
+            if self.ID['expEnv'] not in expEnvList['values']:
+                shouldDestroy = False
+
+            if shouldDestroy:
+                idUI.destroy()
+            else:
+                tkm.showwarning(title='Incorrect values', message='Some of the values appear to be missing or incorrect')
+            
+        saveButton = ttk.Button(idUI, text='Save', command=save_button)
+        saveButton.grid(row=rowNum, column = 1)
+        idUI.mainloop() 
+
