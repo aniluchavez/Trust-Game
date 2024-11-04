@@ -2,7 +2,7 @@ from psychopy import visual
 import globals as glb
 
 # PHOTODIODE CODE
-PHOTODIODE = visual.Rect(glb.UI_WIN, fillColor='white', lineColor='white', width=0.5, height=0.5, pos=(-0.85, -0.75))
+PHOTODIODE = visual.Rect(glb.UI_WIN, fillColor='white', lineColor='white', width=0.3, height=0.45, pos=(-0.85, -0.78))
 
 
 # CODE FOR THE TEXT STIMULUS
