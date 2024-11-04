@@ -45,7 +45,7 @@ def run_experiment():
             # Generate the trial types for the current block
             interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
             print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
-
+            
             # Run each trial based on the interleaved structure
             for trialIdx, trialType in enumerate(interleaved_trials):
                 trialData = ...

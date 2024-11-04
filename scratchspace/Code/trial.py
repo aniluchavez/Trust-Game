@@ -81,7 +81,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         glb.UI_WIN.flip()
 
         markEvent(f'{EventType}End', CpuIndex)
-        core.wait(3)
+        core.wait(1.5)
 
     return {'type': EventType,
             'partner': PartnerName,
@@ -111,7 +111,7 @@ def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogi
         "partner": f'{PartnerName}-{CpuRole}',
         "outcome": cpuResponse,
         "response_time": userDecision['time'],
-        "misc_info": f"${userDecision['amount']}"
+        "misc_info": f"${userDecision['fresh_pot']} -> ${userDecision['amount']}"
     }
 
 # FUNCTION FOR QUICK TRANSITION FROM RANKING TO START OF THE TRIAL
@@ -125,10 +125,10 @@ def show_game_start_transition():
 # FUNCTION TO PROCESS USER'S DECISION
 def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
     # Initialize a fresh pot for this specific trial
-    fresh_pot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
+    freshPot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
     # Guardar , Invertir 
-    keepButtonText = f"Keep ${fresh_pot}"
-    investButtonText = f"Invest ${fresh_pot}"
+    keepButtonText = f"Keep ${freshPot}"
+    investButtonText = f"Invest ${freshPot}"
     
     markEvent("DecisionStart")
     stim.PHOTODIODE.draw()
@@ -160,7 +160,7 @@ def normal_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName
 
     amountInvolved = GameLogic.trustor_decision(decision, CpuIndex)
 
-    return {"choice": decision, "amount": amountInvolved, 'time': responseTime}
+    return {"choice": decision, "amount": amountInvolved, 'time': responseTime, 'fresh_pot': freshPot}
 
 def norm_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonText, Highlight=None):
     keepLine = (255,255,255) if Highlight == 1 else (0, 0, 255)

@@ -69,12 +69,12 @@ class Parameters:
         and compensating in subsequent blocks to reach equal totals of 120 trials for each type by the end.
         """
         numPartners = len(self.partners)
-        trialsPerBlock = self.block['trialsPerBlock']
+        trialsPerBlock = self.exp['trialsPerBlock']
         # Calculate target number of lottery trials for the first block
         if block_idx == 0:
-            firstHalf = list(range(numPartners)) * (trialsPerBlock / (2*numPartners) )
+            firstHalf = list(range(numPartners)) * int(trialsPerBlock / (2*numPartners) )
             random.shuffle(firstHalf)
-            secondHalf = ([-1] * (trialsPerBlock/4)) + list(range(numPartners)) * (trialsPerBlock / (2*numPartners) )
+            secondHalf = ([-1] * int(trialsPerBlock/4)) + list(range(numPartners)) * int(trialsPerBlock / (4*numPartners) )
             random.shuffle(secondHalf)
             return firstHalf + secondHalf
 
@@ -82,7 +82,7 @@ class Parameters:
         else:
             options = list(range(numPartners))
             options.append(-1)
-            options *= (trialsPerBlock /  (numPartners+1) )
+            options *= int(trialsPerBlock /  (numPartners+1) )
             random.shuffle(options)
             return options
             # Adjust lottery count slightly in subsequent blocks to compensate
