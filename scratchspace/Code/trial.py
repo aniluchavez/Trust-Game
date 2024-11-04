@@ -31,7 +31,7 @@ def show_welcome():
 # FUNCTION TO PROMPT PARTICIPANT TO RATE PARTNER'S TRUSTWORTHINESS
 #Spanish instructions: Por favor califica la confianza que le tienes a esta persona usando la escala inferior. Mueve las flechas del teclado <>
 # para elegir tu grado de confianza y presiona 'ENTER'
-INSTRUCTIONS_TEXT = "Please rate the trustworthiness of your partner on the scale below. Move slider with trackpad to desired ranking and press ENTER"
+INSTRUCTIONS_TEXT = "Please rate the trustworthiness of your partner on the scale below. Move slider with the arrow keys to desired ranking and press ENTER"
 def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuIndex:int):
     stim.SLIDER.reset()
     response = -1

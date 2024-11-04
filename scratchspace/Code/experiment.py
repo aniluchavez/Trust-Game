@@ -12,6 +12,8 @@ def run_experiment():
     allRankings = []
     midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
 
+    markEvent("taskStart")
+
     # Show welcome screen
     trial.show_welcome()
     

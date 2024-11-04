@@ -14,7 +14,7 @@ class Parameters:
     def __init__(self):
         # Screen, text, and window configurations
         self.screen = {'number': 1, 'fullscr': True}
-        self.window = {'size': [1024, 768], 'bgColor': [122,122,122], 'units': 'norm'}
+        self.window = {'size': [1024, 768], 'bgColor': [90,90,90], 'units': 'norm'}
         
         self.text = {'font': 'Arial', 'size': 24, 'color': [255, 255, 255]}  # Simplified font to 'Arial'
         
@@ -22,11 +22,12 @@ class Parameters:
         self.exp = {
             'name'     : "TrustGame",  # A name for the task to be used in filenames
             'numBlocks': 10,  # Number of blocks in the experiment
-            'outputDir': 'data'  # Output directory for saving data
+            'outputDir': 'data',  # Output directory for saving data
+            'trialsPerBlock': 48
         }
-        self.block = {
-            'numTrials': 48  # Total number of trials in each block
-        }
+        # self.block = {
+        #     'numTrials': 48  # Total number of trials in each block
+        # }
         self.timing = {
             'photodiode' : 0.25,
             'decisionDuration': 3,  # Decision phase duration (in seconds)
@@ -60,7 +61,7 @@ class Parameters:
 
     def get_block_info(self):
         """Returns the number of blocks and trials per block."""
-        return self.exp['numBlocks'], self.block['numTrials']
+        return self.exp['numBlocks'], self.exp['trialsPerBlock'] #self.block['numTrials']
 
     def get_interleaved_trial_types(self, num_trials, block_idx):
         """
