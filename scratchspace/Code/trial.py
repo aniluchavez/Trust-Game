@@ -224,9 +224,9 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     suggestionType = "partner" if random.random() < 0.5 else "self"
     suggestionPartner = random.choice(PartnerNames)
     # sugiere que entres a a loteria, sugiere que no entres a lo loteria, tu decide si quieres entrar a la loteria
-    suggestionText = f"{suggestionPartner} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
-                     if suggestionType == "partner" else "You decide whether to enter the lottery."
-
+    suggestionText = "You decide whether to enter the lottery."
+    # f"{suggestionPartner} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
+    #                      if suggestionType == "partner" else 
     response = None
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
     markEvent("DecisionStart")

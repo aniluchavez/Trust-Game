@@ -47,12 +47,13 @@ def run_experiment():
             # Run each trial based on the interleaved structure
             for trialIdx, trialType in enumerate(interleaved_trials):
                 trialData = ...
-                if trialType == "trust":
-                    cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
-                    trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, cpuIndex, 
+                if trialType != -1:
+                    # cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
+                    partnerConfig = partners[trialType]
+                    trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
                                                    partnerImages[partnerConfig["name"]], partnerConfig["name"])
 
-                elif trialType == "lottery":
+                else:
                     trialData = trial.lottery_trial(list(partnerImages.keys()),trialIdx,blockIdx)
 
                 trialData["blockIdx"] = blockIdx+1

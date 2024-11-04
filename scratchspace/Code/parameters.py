@@ -67,22 +67,35 @@ class Parameters:
         Returns a balanced list of trial types for each block, adjusting the first block to under-sample lottery trials
         and compensating in subsequent blocks to reach equal totals of 120 trials for each type by the end.
         """
+        numPartners = len(self.partners)
+        trialsPerBlock = self.block['trialsPerBlock']
         # Calculate target number of lottery trials for the first block
         if block_idx == 0:
-            num_lottery_trials = 3  # Fewer lottery trials in Block 1
+            firstHalf = list(range(numPartners)) * (trialsPerBlock / (2*numPartners) )
+            random.shuffle(firstHalf)
+            secondHalf = ([-1] * (trialsPerBlock/4)) + list(range(numPartners)) * (trialsPerBlock / (2*numPartners) )
+            random.shuffle(secondHalf)
+            return firstHalf + secondHalf
+
+            # num_lottery_trials = 3  # Fewer lottery trials in Block 1
         else:
+            options = list(range(numPartners))
+            options.append(-1)
+            options *= (trialsPerBlock /  (numPartners+1) )
+            random.shuffle(options)
+            return options
             # Adjust lottery count slightly in subsequent blocks to compensate
-            remaining_blocks = 10 - (block_idx + 1)
-            shortfall = 24 * 10 - (3 + 24 * remaining_blocks)  # Expected 120 total for each type minus what Block 1 contributed
-            num_lottery_trials = (num_trials // 2) + (shortfall // remaining_blocks)
+            # remaining_blocks = 10 - (block_idx + 1)
+            # shortfall = 24 * 10 - (3 + 24 * remaining_blocks)  # Expected 120 total for each type minus what Block 1 contributed
+            # num_lottery_trials = (num_trials // 2) + (shortfall // remaining_blocks)
 
         # Calculate trust trials to balance the block
-        num_trust_trials = num_trials - num_lottery_trials
+        # num_trust_trials = num_trials - num_lottery_trials
 
-        # Create the list and shuffle to interleave
-        trial_types = ['lottery'] * num_lottery_trials + ['trust'] * num_trust_trials
-        random.shuffle(trial_types)  # Shuffle for interleaving
-        return trial_types
+        # # Create the list and shuffle to interleave
+        # trial_types = ['lottery'] * num_lottery_trials + ['trust'] * num_trust_trials
+        # random.shuffle(trial_types)  # Shuffle for interleaving
+        # return trial_types
 
 
     def get_block_partners(self, block_idx):
