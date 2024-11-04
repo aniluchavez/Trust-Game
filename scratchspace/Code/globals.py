@@ -16,7 +16,8 @@ if PARAMETERS.ID['expEnv'] == "BCM-EMU":
     MATENG = matlab.engine.start_matlab()                                       # Fire up the matlab engine
     logEntry = MATENG.eval("getNextLogEntry();", nargout = 2)                   # Gather the log Entry for the patient
     emuRunNum = int(logEntry[0])                                                # Isolate the EMU number 
-    emuSaveName = f'EMU-{emuRunNum:04}_subj-{logEntry[1]}_BinocularRivarly'     # Generate a filename for the Neural recordings
+    expName = PARAMETERS.exp["name"]
+    emuSaveName = f'EMU-{emuRunNum:04}_subj-{logEntry[1]}_{expName}'     # Generate a filename for the Neural recordings
     MATENG.workspace['emuSaveName'] = MATENG.cellstr(list(emuSaveName))         # Save the filename in the matlab workspace
     MATENG.eval("emuSaveName = [emuSaveName{:}];", nargout = 0)                 # Modify the filename in the correct format (cell->char)
     PARAMETERS.ID.update({'emuRunNum': emuRunNum})                              # Save the emu run number in the emu parameters
