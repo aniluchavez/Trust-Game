@@ -81,7 +81,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         glb.UI_WIN.flip()
 
         markEvent(f'{EventType}End', CpuIndex)
-        core.wait(3)
+        core.wait(1.5)
 
     return {'type': EventType,
             'partner': PartnerName,
