@@ -6,6 +6,7 @@ import trial
 from markEvent import markEvent
 from Class.game_logic import GameLogic
 
+
 def run_experiment():
     allTrials = []
     allRankings = []
@@ -38,6 +39,7 @@ def run_experiment():
                 allRankings.append(formatedData)
 
         if not glb.ABORT:
+            trial.show_game_start_transition()
             # Generate the trial types for the current block
             interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
             print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
@@ -77,7 +79,8 @@ def run_experiment():
             blockRankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
         
         if glb.ABORT: break
-
+        if blockIdx < numBlocks - 1 and not glb.ABORT:
+            trial.show_block_transition(blockIdx + 1)
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
@@ -90,7 +93,7 @@ def run_experiment():
     eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
     eventDataFrame.to_excel(glb.PARAMETERS.outputDir+f'Event Data.xlsx')
 
-    # save_data(allData)
+    #save_data(allData)
     glb.UI_WIN.close()
 
 
@@ -102,10 +105,10 @@ def format_data(Format, Data):
                     str(Data['outcome']), float(Data['response_time']), str(Data['misc_info']))
         case 'Ranking':
             return (str(Data['type']), str(Data['partner']), int(Data['ranking']), float(Data['response_time']))
-# def save_data(data_records, filename="experiment_data"):
-#     import csv, os
-#     filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
-#     with open(filepath, 'w', newline='') as file:
-#         writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
-#         writer.writeheader()
-#         writer.writerows(data_records)
+def save_data(data_records, filename="experiment_data"):
+    import csv, os
+    filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
+    with open(filepath, 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
+        writer.writeheader()
+        writer.writerows(data_records)
