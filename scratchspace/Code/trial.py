@@ -241,13 +241,16 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     # f"{suggestionPartner} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
     #                      if suggestionType == "partner" else 
     response = None
+    investment_amount = random.randint(1, 5)
+    lottery_info_text = f"Invest ${investment_amount} with a chance to multiply by 10!"
+
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
     markEvent("DecisionStart")
 
     stim.PHOTODIODE.draw()
-    lot_decision_draw(suggestionText)   
+    lot_decision_draw(lottery_info_text)   
     core.wait(glb.PARAMETERS.timing['photodiode'])
-    lot_decision_draw(suggestionText)     
+    lot_decision_draw(lottery_info_text)     
     glb.REL_CLOCK.reset()         
 
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
@@ -262,10 +265,10 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     elif 'f' in keys:
         response = "yes"
         highlight = 1
-        wonLottery = random.randint(0, 1) == 1
+        wonLottery = random.choice([True, False])  # 50% chance of winning
         outcome = "Won" if wonLottery else "Lost"
-        # Ganaste la loteria, No ganaste la loteria
-        outcomeMessage = "You won the lottery!" if wonLottery else "You did not win the lottery."
+        # Ganaste , No ganaste la loteria
+        outcomeMessage = f"You won ${investment_amount * 10}!" if wonLottery else "You did not win the lottery."
     elif 'j' in keys:
         highlight = 2
         response = "no"
@@ -275,9 +278,9 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     
     if not glb.ABORT:
         stim.PHOTODIODE.draw()
-        lot_decision_draw(suggestionText, highlight)   
+        lot_decision_draw(lottery_info_text, highlight)   
         core.wait(glb.PARAMETERS.timing['photodiode'])
-        lot_decision_draw(suggestionText, highlight)  
+        lot_decision_draw(lottery_info_text, highlight)  
         core.wait(glb.PARAMETERS.timing['photodiode'])
 
         markEvent("DecisionEnd")

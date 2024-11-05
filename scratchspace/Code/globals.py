@@ -10,19 +10,19 @@ prefs.hardware['audioLatencyMode'] = '3'
 PARAMETERS = Parameters()
 
 # Conduct EMU startup operations as needed
-# MATENG = ...
-# if PARAMETERS.ID['expEnv'] == "BCM-EMU":
-#     import matlab.engine                                                        # import the matlab engine
-#     MATENG = matlab.engine.start_matlab()                                       # Fire up the matlab engine
-#     logEntry = MATENG.eval("getNextLogEntry();", nargout = 2)                   # Gather the log Entry for the patient
-#     emuRunNum = int(logEntry[0])                                                # Isolate the EMU number 
-#     expName = PARAMETERS.exp["name"]
-#     emuSaveName = f'EMU-{emuRunNum:04}_subj-{logEntry[1]}_{expName}'     # Generate a filename for the Neural recordings
-#     MATENG.workspace['emuSaveName'] = MATENG.cellstr(list(emuSaveName))         # Save the filename in the matlab workspace
-#     MATENG.eval("emuSaveName = [emuSaveName{:}];", nargout = 0)                 # Modify the filename in the correct format (cell->char)
-#     PARAMETERS.ID.update({'emuRunNum': emuRunNum})                              # Save the emu run number in the emu parameters
-#     PARAMETERS.ID['name'] = logEntry[1]                                         # Save the EMU codename as the patient's ID
-# PARAMETERS.generate_output_dest()
+MATENG = ...
+if PARAMETERS.ID['expEnv'] == "BCM-EMU":
+    import matlab.engine                                                        # import the matlab engine
+    MATENG = matlab.engine.start_matlab()                                       # Fire up the matlab engine
+    logEntry = MATENG.eval("getNextLogEntry();", nargout = 2)                   # Gather the log Entry for the patient
+    emuRunNum = int(logEntry[0])                                                # Isolate the EMU number 
+    expName = PARAMETERS.exp["name"]
+    emuSaveName = f'EMU-{emuRunNum:04}_subj-{logEntry[1]}_{expName}'     # Generate a filename for the Neural recordings
+    MATENG.workspace['emuSaveName'] = MATENG.cellstr(list(emuSaveName))         # Save the filename in the matlab workspace
+    MATENG.eval("emuSaveName = [emuSaveName{:}];", nargout = 0)                 # Modify the filename in the correct format (cell->char)
+    PARAMETERS.ID.update({'emuRunNum': emuRunNum})                              # Save the emu run number in the emu parameters
+    PARAMETERS.ID['name'] = logEntry[1]                                         # Save the EMU codename as the patient's ID
+PARAMETERS.generate_output_dest()
 
 # Set up experiment settings
 EXPERIMENT_NAME = "Trust Game Experiment"

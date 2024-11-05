@@ -72,17 +72,17 @@ def markEvent(EventType: str, *args, **kwargs):
     glb.EVENTS.append((eventName, eventTime))
 
     # Additional environment-specific handling if needed
-    # if glb.PARAMETERS.ID.get('expEnv') == "BCM-EMU":
-    #     match EventType:
-    #         case "taskStart":
-    #             onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout=1)
-    #             glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
-    #         case "taskStop":
-    #             glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout=0)
-    #         case "taskAbort":
-    #             glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout=0)
-    #         case _:
-    #             blackRockComment = glb.MATENG.cellstr([eventName])
-    #             glb.MATENG.workspace['blackRockComment'] = blackRockComment
-    #             glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout=0)
-    #             glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment, 'instance', onlineNSP(i)-1); end", nargout=0)
+    if glb.PARAMETERS.ID.get('expEnv') == "BCM-EMU":
+        match EventType:
+            case "taskStart":
+                onlineNSP = glb.MATENG.eval("TaskComment('start', emuSaveName);", nargout=1)
+                glb.MATENG.workspace['onlineNSP'] = matlab.double(onlineNSP)
+            case "taskStop":
+                glb.MATENG.eval("TaskComment('stop', emuSaveName);", nargout=0)
+            case "taskAbort":
+                glb.MATENG.eval("TaskComment('kill', emuSaveName);", nargout=0)
+            case _:
+                blackRockComment = glb.MATENG.cellstr([eventName])
+                glb.MATENG.workspace['blackRockComment'] = blackRockComment
+                glb.MATENG.eval("blackRockComment = [blackRockComment{:}];", nargout=0)
+                glb.MATENG.eval("for i=1:numel(onlineNSP); cbmex('comment', 255, 0, blackRockComment, 'instance', onlineNSP(i)-1); end", nargout=0)
