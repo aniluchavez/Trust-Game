@@ -209,7 +209,7 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
 
     markEvent("OutcomeEnd")
 
-    core.wait(2)
+    core.wait(1.5)
     return outcome
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
@@ -220,9 +220,9 @@ def show_cumulative_returns(cumulative_returns, partner_names):
         partner_name = partner_names.get(cpu_index, f"Partner {cpu_index}")
         return_text += f"{partner_name} returned a total of ${total_returned}\n"
     
-    stim.draw_text(return_text, Pos=(0, 0), Height=70)
+    stim.draw_text(return_text, Pos=(0, 0), Height=80)
     glb.UI_WIN.flip()
-    core.wait(4)  # Show summary for 4 seconds
+    core.wait(4.5)  # Show summary for 4 seconds
  # Show summary for 4 seconds
 
 def show_block_transition(block_number):
@@ -242,7 +242,8 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     #                      if suggestionType == "partner" else 
     response = None
     investment_amount = random.randint(1, 5)
-    lottery_info_text = f"Invest ${investment_amount} with a chance to multiply by 10!"
+    #Invierte X para la oportunidad de que se multiplique por 10
+    lottery_info_text = f"Invest ${investment_amount} with a chance for it to multiply by 5!"
 
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
     markEvent("DecisionStart")
@@ -268,7 +269,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         wonLottery = random.choice([True, False])  # 50% chance of winning
         outcome = "Won" if wonLottery else "Lost"
         # Ganaste , No ganaste la loteria
-        outcomeMessage = f"You won ${investment_amount * 10}!" if wonLottery else "You did not win the lottery."
+        outcomeMessage = f"You won ${investment_amount * 5}!" if wonLottery else "You did not win the lottery."
     elif 'j' in keys:
         highlight = 2
         response = "no"
