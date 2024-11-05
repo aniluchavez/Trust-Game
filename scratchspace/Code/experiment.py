@@ -60,7 +60,7 @@ def run_experiment():
                 if trialType != -1:
                     # cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
                     partnerConfig = partners[trialType]
-                    trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
+                    trialData = trial.trust_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
                                                    partnerImages[partnerConfig["name"]], partnerConfig["name"])
 
                 else:
