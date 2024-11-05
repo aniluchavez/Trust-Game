@@ -44,6 +44,10 @@ def run_experiment():
                 formatedData = format_data('Ranking', initialRating)
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)
+
+        practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
+        allTrials.extend(practiceTrials)
+        
         if blockIdx == 0:
             trial.show_game_start_transition()
 
@@ -126,3 +130,30 @@ def save_data(data_records, filename="experiment_data"):
         writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
         writer.writeheader()
         writer.writerows(data_records)
+# experiment.py (run_experiment function)
+
+def run_practice_trials(gameLogic, partnerImages, partners):
+    practiceTrials = []
+    numPracticeTrials = 5  # Number of practice trials
+    for trialIdx in range(numPracticeTrials):
+        # Randomly choose between a trust trial or lottery trial
+        if random.choice([True, False]):  # Random choice for demonstration
+            cpuIndex = trialIdx % len(partners)  # Loop through partners
+            partnerConfig = partners[cpuIndex]
+            trialData = trial.trust_trial(
+                TrialIdx=-1,  # Use -1 to indicate practice
+                BlockIdx=-1,
+                UserRole="trustor",
+                CpuRole="trustee",
+                GameLogic=gameLogic,
+                CpuIndex=cpuIndex,
+                PartnerImage=partnerImages[partnerConfig["name"]],
+                PartnerName=partnerConfig["name"]
+            )
+        else:
+            trialData = trial.lottery_trial(
+                PartnerNames=list(partnerImages.keys()), TrialIdx=-1, BlockIdx=-1
+            )
+
+        practiceTrials.append(trialData)
+    return practiceTrials
