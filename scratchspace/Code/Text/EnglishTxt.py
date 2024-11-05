@@ -47,7 +47,7 @@ TOP_STEAL = " kept the money"
 # For trial.lottery_trial() -> LT
 LT_SUGGESTION = "You decide whether or not to enter the lottery"
 LT_INFO_1 = "Invest $"
-LT_INFO_2 = "Chance to gain 10x!"
+LT_INFO_2 = "for a chance to gain 10x!"
 LT_WON =  "You won $"
 LT_LOST = "You did not win the lottery"
 LT_QUIT = "You chose not to play the lottery"

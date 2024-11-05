@@ -24,7 +24,7 @@ class Parameters:
             'numBlocks': 10,  # Number of blocks in the experiment
             'outputDir': 'data',  # Output directory for saving data
             'trialsPerBlock': 12,
-            'language': 'English'
+            'language': 'Spanish'
         }
         # self.block = {
         #     'numTrials': 48  # Total number of trials in each block

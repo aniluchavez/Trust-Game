@@ -288,7 +288,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     #                      if suggestionType == "partner" else 
     response = None
     investment_amount = random.randint(1, 5)
-    # lottery_info_text = f"Invest ${investment_amount} with a chance to multiply by 10!"
+    """Invest $X for a chance to win 10x!"""
     lottery_info_text = f"{txt.LT_INFO_1}{investment_amount} {txt.LT_INFO_2}"
 
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
@@ -362,15 +362,20 @@ def lot_decision_draw(SuggestionText, Highlight=None):
     stim.draw_text(SuggestionText, Pos=(0, -.05),Height=55, Color=(255,255,255))
     # Quieres jugar a la loteria ? 
     # stim.draw_text("Do you want to play the lottery?", Pos=(0,-0.3), Height=50)
+    """Do you want to play the lottery?"""
     stim.draw_text(txt.LDD_QUESTION, Pos=(0,-0.3), Height=50)
     stim.draw_rect(FillColor=(0,0,255), LineColor=yesLine, Pos=(-0.3, -0.5), Width=0.3, Height=0.15)
     # stim.draw_text("Yes", Pos=(-0.3, -0.5), Height=54)
+    """Yes"""
     stim.draw_text(txt.LDD_YES, Pos=(-0.3, -0.5), Height=54)
     stim.draw_rect(FillColor=(0,0,255), LineColor=noLine, Pos=(0.3, -0.5), Width=0.3, Height=0.15)
     # stim.draw_text("No", Pos=(0.3, -0.5), Height=54)
+    """No"""
     stim.draw_text(txt.LDD_NO, Pos=(0.3, -0.5), Height=54)
     #Presiona F para Si, Presiona J para No
+    """Press 'F' for Yes"""
     stim.draw_text(txt.LDD_YES_INSTR, Pos=(-0.3, -0.67), Height=43)
+    """Press 'J' for No"""
     stim.draw_text(txt.LDD_NO_INSTR, Pos=(0.3, -0.67), Height=43)
     # stim.draw_text("Press F for Yes", Pos=(-0.3, -0.67), Height=43)
     # stim.draw_text("Press J for No", Pos=(0.3, -0.67), Height=43)

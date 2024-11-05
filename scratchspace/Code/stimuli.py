@@ -79,7 +79,7 @@ SLIDER = visual.Slider(
 RECT = visual.Rect(glb.UI_WIN, colorSpace='rgb255')
 RECT_FILLCOLOR = False
 RECT_LINECOLOR = False
-RECT_WIDTH = 0.6
+RECT_WIDTH = 0.65
 RECT_HEIGHT = 0.5
 RECT_POS = (0,0)
 RECT_OPACITY = 1
