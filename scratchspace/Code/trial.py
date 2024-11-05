@@ -25,10 +25,13 @@ def show_welcome():
     #               "You can choose to keep or invest money, and your partner may choose to share up to 3X your initial investment or keep it all for themselves.\n\n"+\
     #               "Press 'Enter' to continue."
     # stim.draw_text(welcomeText, Pos=(0, 0), Height=40)
+    """" Welcome text. See EnglishTxt.py"""
     stim.draw_text(txt.SW_1, Pos=(0, 0), Height=40)
     glb.UI_WIN.flip()
     event.waitKeys(keyList=['return'], maxWait=20)
     # stim.draw_text("Let's begin!", Height=50, Pos=(0, 0))
+
+    """"Let's begin!"""
     stim.draw_text(txt.SW_BEGIN, Height=50, Pos=(0, 0))
     glb.UI_WIN.flip()
     core.wait(3)
@@ -49,14 +52,19 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         if glb.REL_CLOCK.getTime() < glb.PARAMETERS.timing['photodiode']:
             stim.PHOTODIODE.draw()
         stim.draw_image(partnerImageName, Pos=(0, 0.5), Size=(0.6, 0.8))
+        """Partner: X"""
         stim.draw_text(f"{txt.STR_PARTNER}{PartnerName}", Height=50, Pos=(0, 0))
+        """Please rate the trustworthiness of your partner on the scale below. Move slider with the arrow keys to desired ranking and press ENTER"""
         stim.draw_text(txt.STR_INSTR, Pos=(0, -0.3), Height=40)
         # stim.draw_text(f"Partner: {PartnerName}", Height=50, Pos=(0, 0))
         # stim.draw_text(INSTRUCTIONS_TEXT, Pos=(0, -0.3), Height=40)
         stim.SLIDER.draw()
         # no confiable, neutral, confianble
+        """Not Trustworthy"""
         stim.draw_text(txt.STR_UNTRUSTWORTHY, Pos=(-0.4, -0.6), Height=40)
+        """Neutral"""
         stim.draw_text(txt.STR_NEUTRAL, Pos=(0, -0.6), Height=40)
+        """Trustworthy"""
         stim.draw_text(txt.STR_TRUSTWORTHY, Pos=(0.4, -0.6), Height=40)
         # stim.draw_text("Not Trustworthy", Pos=(-0.4, -0.6), Height=40)
         # stim.draw_text("Neutral", Pos=(0, -0.6), Height=40)
@@ -129,8 +137,8 @@ def trust_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic
 
 # FUNCTION FOR QUICK TRANSITION FROM RANKING TO START OF THE TRIAL
 def show_game_start_transition():
-    """Display a transition screen after the rating and before the game starts."""
     # transition_text = "Starting the game. Get ready for the first trial..."
+    """Starting the game. Get ready for the first trial..."""
     stim.draw_text(txt.SGST_TRANSITION, Pos=(0, 0), Height=50)
     # stim.draw_text(transition_text, Pos=(0, 0), Height=50)
     glb.UI_WIN.flip()
@@ -141,7 +149,9 @@ def trust_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:
     # Initialize a fresh pot for this specific trial
     freshPot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
     # Guardar , Invertir 
+    """ Keep $X"""
     keepButtonText = f"{txt.TDP_KEEP_BTN}{freshPot}"
+    """Invest $X"""
     investButtonText = f"{txt.TDP_INVEST_BTN}{freshPot}"
     # keepButtonText = f"Keep ${freshPot}"
     # investButtonText = f"Invest ${freshPot}"
@@ -183,13 +193,16 @@ def trust_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonT
     investLine = (255,255,255) if Highlight == 2 else (0, 0, 255)
 
     stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.6, 0.8))
-    # stim.draw_text(f"Partner: {PartnerName}", Pos=(0, 0), Height=50)
+    # stim.draw_text(f"Partner: {PartnerName}", Pos=(0, 0), Height=50)\
+    """Partner: X"""
     stim.draw_text(f"{txt.TDD_PARTNER}{PartnerName}", Pos=(0, 0), Height=50)
     stim.draw_rect(FillColor=(0, 0, 255), LineColor=keepLine, Width=0.6, Height=0.2, Pos=(-0.4, -0.5))
     stim.draw_text(KeepButtonText, Pos=(-0.4, -0.5), Height=60)
     stim.draw_rect(FillColor=(0, 0, 255), LineColor=investLine, Width=0.6, Height=0.2, Pos=(0.4, -0.5))
     stim.draw_text(InvestButtonText, Pos=(0.4, -0.5), Height=60)
+    """Press 'F' to Keep"""
     stim.draw_text(txt.TDD_KEEP_INSTR, Pos=(-0.4, -0.7), Height=54)
+    """Press 'J' to Invest"""
     stim.draw_text(txt.TDD_INVEST_INSTR, Pos=(0.4, -0.7), Height=54)
     # stim.draw_text("Press 'F' to Keep", Pos=(-0.4, -0.7), Height=54)
     # stim.draw_text("Press 'J' to Invest", Pos=(0.4, -0.7), Height=54)
@@ -208,6 +221,7 @@ def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:
     if decision == "keep":
         # Tu guardaste  
         # outcomeMessage = f"You kept ${amountGiven}"
+        """You kept $X"""
         outcomeMessage = f"{txt.TOP_KEPT}{amountGiven}"
         outcome = 'No Deal'
         returnedAmount = amountGiven
@@ -215,6 +229,7 @@ def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:
         #  X regreso , X se quedo con el dinero
         returnedAmount = GameLogic.outcome_phase(amountGiven, CpuIndex)
         # outcomeMessage = f"{PartnerName} returned ${returnedAmount}" if returnedAmount > 0 else f"{PartnerName} kept the money"
+        """X returned Y.     OR      X kept the money."""
         outcomeMessage = f"{PartnerName}{txt.TOP_RETURNED}{returnedAmount}" if returnedAmount > 0 else f"{PartnerName}{txt.TOP_STEAL}"
         outcome = 'Shared' if returnedAmount > 0 else 'Kept'
         #if GameLogic.trustor_balances[CpuIndex] == GameLogic.initial_money:
@@ -236,25 +251,27 @@ def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:
 
 
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
-def show_cumulative_returns(cumulative_returns, partner_names):
-    """Display cumulative returns for each partner at the end of a block."""
+def show_cumulative_returns(CumulativeReturns, PartnerNames):
     # return_text = "End of Block Summary:\n\n"
-    return_text = txt.SCR_SUMMARY
-    for cpu_index, total_returned in cumulative_returns.items():
-        partner_name = partner_names.get(cpu_index, f"Partner {cpu_index}")
+    """"End of Block Summary:\n\n"""
+    returnText = txt.SCR_SUMMARY
+    for cpu_index, total_returned in CumulativeReturns.items():
+        partner_name = PartnerNames.get(cpu_index, f"Partner {cpu_index}")
         # return_text += f"{partner_name} returned a total of ${total_returned}\n"
-        return_text += f"{partner_name}{txt.SCR_RETURN}{total_returned}\n"
+        """ADD: X returned a total of $Y\n"""
+        returnText += f"{partner_name}{txt.SCR_RETURN}{total_returned}\n"
     
-    stim.draw_text(return_text, Pos=(0, 0), Height=70)
+    stim.draw_text(returnText, Pos=(0, 0), Height=70)
     glb.UI_WIN.flip()
     core.wait(4)  # Show summary for 4 seconds
  # Show summary for 4 seconds
 
-def show_block_transition(block_number):
+def show_block_transition(BlockNumber):
     """Display end of block message and indicate the start of the next block."""
-    # transition_text = f"End of Block {block_number}\n\nStarting Block {block_number + 1}...\n\nPress 'Enter' to continue."
-    transition_text = f"{txt.SBT_1}{block_number}{txt.SBT_2}{block_number + 1}{txt.SBT_3}"
-    stim.draw_text(transition_text, Pos=(0, 0), Height=55)
+    # transition_text = f"End of Block {BlockNumber}\n\nStarting Block {BlockNumber + 1}...\n\nPress 'Enter' to continue."
+    """End of Block X.\n\n Starting Block X+1...\n\nPress Enter to continue"""
+    transitionText = f"{txt.SBT_1}{BlockNumber}{txt.SBT_2}{BlockNumber + 1}{txt.SBT_3}"
+    stim.draw_text(transitionText, Pos=(0, 0), Height=55)
     glb.UI_WIN.flip()
     event.waitKeys(keyList=['return'], maxWait=20)
 
@@ -264,6 +281,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     suggestionPartner = random.choice(PartnerNames)
     # sugiere que entres a a loteria, sugiere que no entres a lo loteria, tu decide si quieres entrar a la loteria
     # suggestionText = "You decide whether to enter the lottery."
+    """You decide whether or not to win the lottery"""
     suggestionText = txt.LT_SUGGESTION
     # f"{suggestionPartner} suggests you {'enter' if random.random() < 0.5 else 'do not enter'} the lottery." \
     #                      if suggestionType == "partner" else 
@@ -297,6 +315,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         outcome = "Won" if wonLottery else "Lost"
         # Ganaste , No ganaste la loteria
         # outcomeMessage = f"You won ${investment_amount * 10}!" if wonLottery else "You did not win the lottery."
+        """You won $X     OR    You lost the lottery"""
         outcomeMessage = f"{txt.LT_WON}{investment_amount * 10}!" if wonLottery else txt.LT_LOST
     elif 'j' in keys:
         highlight = 2
@@ -304,6 +323,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         outcome = "Not Played"
         # Decidiste no entrar a la loteria
         # outcomeMessage = "You chose not to play the lottery."
+        """You chose not to play the lottery"""
         outcomeMessage = txt.LT_QUIT
     
     if not glb.ABORT:
