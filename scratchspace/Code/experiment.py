@@ -1,7 +1,7 @@
 import random, math
-import globals as glb
 import pandas as pd
 
+import globals as glb
 import trial
 from markEvent import markEvent
 from Class.game_logic import GameLogic
@@ -60,7 +60,7 @@ def run_experiment():
                 if trialType != -1:
                     # cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
                     partnerConfig = partners[trialType]
-                    trialData = trial.normal_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
+                    trialData = trial.trust_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
                                                    partnerImages[partnerConfig["name"]], partnerConfig["name"])
 
                 else:
@@ -98,10 +98,10 @@ def run_experiment():
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
-    trialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+    trialsDataFrame = pd.DataFrame(allTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
     trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
 
-    rankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+    rankingsDataFrame = pd.DataFrame(allRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
     rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
 
     eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
