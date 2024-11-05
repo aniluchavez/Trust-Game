@@ -10,6 +10,8 @@ from markEvent import markEvent
 # conditional language generation
 if glb.PARAMETERS.exp['language'] == 'English':
     import Text.EnglishTxt as txt
+elif glb.PARAMETERS.exp['language'] == 'Spanish':
+    import Text.SpanishTxt as txt
 
 # FUNCTION THAT SHOWS THE WELCOME MESSAGE
 def show_welcome():
@@ -196,9 +198,9 @@ def trust_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonT
     # stim.draw_text(f"Partner: {PartnerName}", Pos=(0, 0), Height=50)\
     """Partner: X"""
     stim.draw_text(f"{txt.TDD_PARTNER}{PartnerName}", Pos=(0, 0), Height=50)
-    stim.draw_rect(FillColor=(0, 0, 255), LineColor=keepLine, Width=0.6, Height=0.2, Pos=(-0.4, -0.5))
+    stim.draw_rect(FillColor=(0, 0, 255), LineColor=keepLine, Width=0.65, Height=0.2, Pos=(-0.4, -0.5))
     stim.draw_text(KeepButtonText, Pos=(-0.4, -0.5), Height=60)
-    stim.draw_rect(FillColor=(0, 0, 255), LineColor=investLine, Width=0.6, Height=0.2, Pos=(0.4, -0.5))
+    stim.draw_rect(FillColor=(0, 0, 255), LineColor=investLine, Width=0.65, Height=0.2, Pos=(0.4, -0.5))
     stim.draw_text(InvestButtonText, Pos=(0.4, -0.5), Height=60)
     """Press 'F' to Keep"""
     stim.draw_text(txt.TDD_KEEP_INSTR, Pos=(-0.4, -0.7), Height=54)
@@ -236,20 +238,19 @@ def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:
         #    outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})" #may need to remove this, no need for rep
 
     stim.PHOTODIODE.draw()
-    stim.draw_rect(FillColor=(0, 0, 255), Width=0.99, Height=0.4, Pos=(0, 0))
+    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
     stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
     glb.UI_WIN.flip()
     core.wait(glb.PARAMETERS.timing['photodiode'])
-    stim.draw_rect(FillColor=(0, 0, 255), Width=0.99, Height=0.4, Pos=(0, 0))
+    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
     stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
     glb.UI_WIN.flip()
 
     markEvent("OutcomeEnd")
 
-    core.wait(2)
+    core.wait(1.5)
     return outcome, returnedAmount
-
-
+# FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
 def show_cumulative_returns(CumulativeReturns, PartnerNames):
     # return_text = "End of Block Summary:\n\n"
@@ -263,7 +264,7 @@ def show_cumulative_returns(CumulativeReturns, PartnerNames):
     
     stim.draw_text(returnText, Pos=(0, 0), Height=70)
     glb.UI_WIN.flip()
-    core.wait(4)  # Show summary for 4 seconds
+    core.wait(4.5)  # Show summary for 4 seconds
  # Show summary for 4 seconds
 
 def show_block_transition(BlockNumber):
@@ -288,7 +289,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     response = None
     investment_amount = random.randint(1, 5)
     # lottery_info_text = f"Invest ${investment_amount} with a chance to multiply by 10!"
-    lottery_info_text = f"{txt.LT_INFO_1}{investment_amount}. {txt.LT_INFO_2}"
+    lottery_info_text = f"{txt.LT_INFO_1}{investment_amount} {txt.LT_INFO_2}"
 
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
     markEvent("DecisionStart")
