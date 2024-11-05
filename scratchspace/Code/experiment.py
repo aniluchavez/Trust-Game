@@ -46,10 +46,10 @@ def run_experiment():
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)
 
-        # practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
-        # allTrials.extend(practiceTrials)
-        
+               
         if blockIdx == 0:
+            practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
+            allTrials.extend(practiceTrials)
             trial.show_game_start_transition()
 
         if not glb.ABORT:
@@ -117,26 +117,10 @@ def run_experiment():
 
 
 
-def format_data(Format, Data):
-    match Format:
-        case 'Trial':
-            return (str(Data['trial_type']), int(Data['blockIdx']), str(Data['response']), str(Data['partner']), 
-                    str(Data['outcome']), float(Data['response_time']), str(Data['misc_info']))
-        case 'Ranking':
-            return (str(Data['type']), str(Data['partner']), int(Data['ranking']), float(Data['response_time']))
-def save_data(data_records, filename="experiment_data"):
-    import csv, os
-    filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
-    with open(filepath, 'w', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
-        writer.writeheader()
-        writer.writerows(data_records)
-# experiment.py (run_experiment function)
-
-
 def run_practice_trials(gameLogic, partnerImages, partners):
     practiceTrials = []
     numPracticeTrials = 5  # Number of practice trials
+    trialData = ...
     for trialIdx in range(numPracticeTrials):
         # Randomly choose between a trust trial or lottery trial
         if random.choice([True, False]):  # Random choice for demonstration
@@ -156,6 +140,25 @@ def run_practice_trials(gameLogic, partnerImages, partners):
             trialData = trial.lottery_trial(
                 PartnerNames=list(partnerImages.keys()), TrialIdx=-1, BlockIdx=-1
             )
-
-        practiceTrials.append(trialData)
+        trialData["blockIdx"] = -1
+        practiceTrials.append(format_data('Trial', trialData))
     return practiceTrials
+
+
+def format_data(Format, Data):
+    match Format:
+        case 'Trial':
+            return (str(Data['trial_type']), int(Data['blockIdx']), str(Data['response']), str(Data['partner']), 
+                    str(Data['outcome']), float(Data['response_time']), str(Data['misc_info']))
+        case 'Ranking':
+            return (str(Data['type']), str(Data['partner']), int(Data['ranking']), float(Data['response_time']))
+        
+        
+def save_data(data_records, filename="experiment_data"):
+    import csv, os
+    filepath = os.path.join(glb.DATA_PATH, f"{filename}.csv")
+    with open(filepath, 'w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=data_records[0].keys())
+        writer.writeheader()
+        writer.writerows(data_records)
+
