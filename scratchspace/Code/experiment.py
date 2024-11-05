@@ -1,7 +1,7 @@
 import random, math
-import globals as glb
 import pandas as pd
 
+import globals as glb
 import trial
 from markEvent import markEvent
 from Class.game_logic import GameLogic
@@ -98,10 +98,10 @@ def run_experiment():
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
-    trialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+    trialsDataFrame = pd.DataFrame(allTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
     trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
 
-    rankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+    rankingsDataFrame = pd.DataFrame(allRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
     rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
 
     eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])

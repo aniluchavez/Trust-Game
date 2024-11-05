@@ -94,14 +94,15 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
 def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
     GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
     cpuResponse = "___"
+    returnedAmount = -1
     markEvent("trialStart", TrialIdx, BlockIdx, 'trust')
     if UserRole == "trustor":
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
         if not glb.ABORT:
-            cpuResponse = normal_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
+            cpuResponse, returnedAmount = normal_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
     else:
         cpuDecision = {"choice": "give", "amount": GameLogic.trustor_decision("give", CpuIndex)}
-        cpuResponse = normal_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
+        cpuResponse, returnedAmount = normal_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
         userDecision = normal_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
     
     if not glb.ABORT: markEvent("trialEnd", TrialIdx, BlockIdx, 'trust')
@@ -111,7 +112,7 @@ def normal_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogi
         "partner": f'{PartnerName}-{CpuRole}',
         "outcome": cpuResponse,
         "response_time": userDecision['time'],
-        "misc_info": f"${userDecision['fresh_pot']} -> ${userDecision['amount']}"
+        "misc_info": f"${userDecision['fresh_pot']} -> ${returnedAmount}"
     }
 
 # FUNCTION FOR QUICK TRANSITION FROM RANKING TO START OF THE TRIAL
@@ -185,16 +186,17 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
 
     outcomeMessage = ...
     outcome = ...
+    returnedAmount = ...
     if decision == "keep":
         # Tu guardaste  
         outcomeMessage = f"You kept ${amountGiven}"
         outcome = 'No Deal'
-        returned_amount = 0
+        returnedAmount = amountGiven
     else:
         #  X regreso , X se quedo con el dinero
-        returned_amount = GameLogic.outcome_phase(amountGiven, CpuIndex)
-        outcomeMessage = f"{PartnerName} returned ${returned_amount}" if returned_amount > 0 else f"{PartnerName} kept the money"
-        outcome = 'Shared' if returned_amount > 0 else 'Kept'
+        returnedAmount = GameLogic.outcome_phase(amountGiven, CpuIndex)
+        outcomeMessage = f"{PartnerName} returned ${returnedAmount}" if returnedAmount > 0 else f"{PartnerName} kept the money"
+        outcome = 'Shared' if returnedAmount > 0 else 'Kept'
         #if GameLogic.trustor_balances[CpuIndex] == GameLogic.initial_money:
         #    outcomeMessage += f" (Your balance was replenished to ${GameLogic.initial_money})" #may need to remove this, no need for rep
 
@@ -210,8 +212,9 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
     markEvent("OutcomeEnd")
 
     core.wait(2)
-    return outcome
-# FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
+    return outcome, returnedAmount
+
+
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
 def show_cumulative_returns(cumulative_returns, partner_names):
     """Display cumulative returns for each partner at the end of a block."""

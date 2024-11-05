@@ -23,7 +23,7 @@ class Parameters:
             'name'     : "TrustGame",  # A name for the task to be used in filenames
             'numBlocks': 10,  # Number of blocks in the experiment
             'outputDir': 'data',  # Output directory for saving data
-            'trialsPerBlock': 48
+            'trialsPerBlock': 12
         }
         # self.block = {
         #     'numTrials': 48  # Total number of trials in each block
