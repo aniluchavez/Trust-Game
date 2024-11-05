@@ -57,9 +57,6 @@ class Parameters:
         self.ID={}
         self.__launch_ID_UI()
 
-        # Size computation for text based on screen settings
-        # self.text.update({'sizeCM': self.text['size']*0.0352777778})
-
     def get_block_info(self):
         """Returns the number of blocks and trials per block."""
         return self.exp['numBlocks'], self.exp['trialsPerBlock'] #self.block['numTrials']
@@ -71,33 +68,18 @@ class Parameters:
         """
         numPartners = len(self.partners)
         trialsPerBlock = self.exp['trialsPerBlock']
-        # Calculate target number of lottery trials for the first block
         if block_idx == 0:
             firstHalf = list(range(numPartners)) * int(trialsPerBlock / (2*numPartners) )
             random.shuffle(firstHalf)
             secondHalf = ([-1] * int(trialsPerBlock/4)) + list(range(numPartners)) * int(trialsPerBlock / (4*numPartners) )
             random.shuffle(secondHalf)
             return firstHalf + secondHalf
-
-            # num_lottery_trials = 3  # Fewer lottery trials in Block 1
         else:
             options = list(range(numPartners))
             options.append(-1)
             options *= int(trialsPerBlock /  (numPartners+1) )
             random.shuffle(options)
             return options
-            # Adjust lottery count slightly in subsequent blocks to compensate
-            # remaining_blocks = 10 - (block_idx + 1)
-            # shortfall = 24 * 10 - (3 + 24 * remaining_blocks)  # Expected 120 total for each type minus what Block 1 contributed
-            # num_lottery_trials = (num_trials // 2) + (shortfall // remaining_blocks)
-
-        # Calculate trust trials to balance the block
-        # num_trust_trials = num_trials - num_lottery_trials
-
-        # # Create the list and shuffle to interleave
-        # trial_types = ['lottery'] * num_lottery_trials + ['trust'] * num_trust_trials
-        # random.shuffle(trial_types)  # Shuffle for interleaving
-        # return trial_types
 
 
     def get_block_partners(self, block_idx):
