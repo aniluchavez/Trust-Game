@@ -22,6 +22,7 @@ SGST_TRANSITION = "Starting the game. Get ready for the first trial..."
 # For trial.show_cumulative_returns() -> SCR
 SCR_SUMMARY= "End of block summary:\n\n"
 SCR_RETURN= " returned a total of $"
+SCR_PROFITS= " You gained a total of $"
 
 # For trial.show_block_transition() -> SBT
 SBT_1 = "End of block "

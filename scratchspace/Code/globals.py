@@ -18,6 +18,7 @@ if PARAMETERS.ID['expEnv'] == "BCM-EMU":
     emuRunNum = int(logEntry[0])                                                # Isolate the EMU number 
     expName = PARAMETERS.exp["name"]
     emuSaveName = f'EMU-{emuRunNum:04}_subj-{logEntry[1]}_{expName}'     # Generate a filename for the Neural recordings
+    print(emuSaveName)
     MATENG.workspace['emuSaveName'] = MATENG.cellstr(list(emuSaveName))         # Save the filename in the matlab workspace
     MATENG.eval("emuSaveName = [emuSaveName{:}];", nargout = 0)                 # Modify the filename in the correct format (cell->char)
     PARAMETERS.ID.update({'emuRunNum': emuRunNum})                              # Save the emu run number in the emu parameters

@@ -11,6 +11,7 @@ def run_experiment():
     allTrials = []
     allRankings = []
     midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
+    blockProfits = [0 for i in range(glb.PARAMETERS.exp['numBlocks'])]
 
     markEvent("taskStart")
 
@@ -45,8 +46,8 @@ def run_experiment():
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)
 
-        practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
-        allTrials.extend(practiceTrials)
+        # practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
+        # allTrials.extend(practiceTrials)
         
         if blockIdx == 0:
             trial.show_game_start_transition()
@@ -64,12 +65,12 @@ def run_experiment():
                 if trialType != -1:
                     # cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
                     partnerConfig = partners[trialType]
-                    trialData = trial.trust_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
+                    trialData= trial.trust_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
                                                    partnerImages[partnerConfig["name"]], partnerConfig["name"])
-
                 else:
                     trialData = trial.lottery_trial(list(partnerImages.keys()),trialIdx,blockIdx)
 
+                blockProfits[blockIdx] += trialData['profit']
                 trialData["blockIdx"] = blockIdx+1
                 formatedData = format_data('Trial', trialData)
                 blockTrials.append(formatedData)
@@ -79,7 +80,7 @@ def run_experiment():
 
         if not glb.ABORT:
             cumulative_returns = gameLogic.get_cumulative_returns()
-            trial.show_cumulative_returns(cumulative_returns, partnerNames)
+            trial.show_cumulative_returns(cumulative_returns, partnerNames, blockProfits[blockIdx])
 
             # Collect final ratings at the end of Block 10
             if blockIdx == 9:  # End of Block 10
@@ -131,6 +132,7 @@ def save_data(data_records, filename="experiment_data"):
         writer.writeheader()
         writer.writerows(data_records)
 # experiment.py (run_experiment function)
+
 
 def run_practice_trials(gameLogic, partnerImages, partners):
     practiceTrials = []

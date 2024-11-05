@@ -118,13 +118,15 @@ def show_game_start_transition():
 
     
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
-def show_cumulative_returns(CumulativeReturns, PartnerNames):
+def show_cumulative_returns(CumulativeReturns, PartnerNames, TotalProfits):
     """"End of Block Summary:\n\n"""
     returnText = txt.SCR_SUMMARY
     for cpu_index, total_returned in CumulativeReturns.items():
         partner_name = PartnerNames.get(cpu_index, f"Partner {cpu_index}")
         """ADD: X returned a total of $Y\n"""
         returnText += f"{partner_name}{txt.SCR_RETURN}{total_returned}\n"
+    
+    returnText += f"{txt.SCR_PROFITS}{TotalProfits}"
     
     stim.draw_text(returnText, Pos=(0, 0), Height=70)
     glb.UI_WIN.flip()
@@ -150,6 +152,7 @@ def show_block_transition(BlockNumber):
 #   PartnerName:    The name for the partner
 # Returns:
 #   Dictionary with the trial information
+#   Subtration of returnedAmount and starting amount to observe profit
 def trust_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
     # Initialize the needed variables
     GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
@@ -174,14 +177,14 @@ def trust_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic
     # If we haven't aborted, mark the end of the trial
     if not glb.ABORT: markEvent("trialEnd", TrialIdx, BlockIdx, 'trust')
     
-    return {
-        "trial_type": f"Trust-{UserRole}",
-        "response": userDecision['choice'],
-        "partner": f'{PartnerName}-{CpuRole}',
-        "outcome": cpuResponse,
-        "response_time": userDecision['time'],
-        "misc_info": f"${userDecision['fresh_pot']} -> ${returnedAmount}"
-    }
+    return {"trial_type": f"Trust-{UserRole}",
+            "response": userDecision['choice'],
+            "partner": f'{PartnerName}-{CpuRole}',
+            "outcome": cpuResponse,
+            "response_time": userDecision['time'],
+            "misc_info": f"${userDecision['fresh_pot']} -> ${returnedAmount}",
+            "profit": returnedAmount - userDecision['fresh_pot']
+            }
 
 # FUNCTION TO PROCESS USER'S DECISION
 # Inputs:
@@ -322,15 +325,16 @@ def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:
 #   BlockIdx:   The index of the block in the experiment
 # Returns:  
 #   Dictionary with the trial information
+#   Subtration of returnedAmount and starting amount to observe profit
 def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     # Initialize some variables
     suggestionPartner = random.choice(PartnerNames)
     """You decide whether or not to win the lottery"""
     suggestionText = txt.LT_SUGGESTION
     response = None
-    investment_amount = random.randint(1, 5)
+    investmentAmount = random.randint(1, 5)
     """Invest $X for a chance to win 10x!"""
-    lottery_info_text = f"{txt.LT_INFO_1}{investment_amount} {txt.LT_INFO_2}"
+    lottery_info_text = f"{txt.LT_INFO_1}{investmentAmount} {txt.LT_INFO_2}"
 
     # Mark the start of the trial and the decision phase
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
@@ -349,6 +353,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     outcomeMessage = 'ABORT'
     outcome = 'ABORT'
     highlight=...
+    returnedAmount = ...
     if 'escape' in keys:
         response = "ABORT"
         glb.abort()
@@ -359,13 +364,15 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         wonLottery = random.choice([True, False])  # 50% chance of winning
         outcome = "Won" if wonLottery else "Lost"
         """You won $X     OR    You lost the lottery"""
-        outcomeMessage = f"{txt.LT_WON}{investment_amount * 10}!" if wonLottery else txt.LT_LOST
+        outcomeMessage = f"{txt.LT_WON}{investmentAmount * 10}!" if wonLottery else txt.LT_LOST
+        returnedAmount = investmentAmount * 10 if wonLottery else 0
     elif 'j' in keys:
         highlight = 2
         response = "no"
         outcome = "Not Played"
         """You chose not to play the lottery"""
         outcomeMessage = txt.LT_QUIT
+        returnedAmount = investmentAmount 
 
     # If we have not aborted: Draw the prompt again with the highlighted response and then the outcome
     if not glb.ABORT:
@@ -397,7 +404,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     core.wait(2)
 
     return {"trial_type": "Lottery", "response": response, "partner": suggestionPartner, 
-            "misc_info": suggestionText, "outcome": outcome, 'response_time': responseTime}
+            "misc_info": suggestionText, "outcome": outcome, 'response_time': responseTime, 'profit': returnedAmount}
 
 # SUBFUCTION FOR LOTTERY DECISION PHASE TO REDUCE REDUNTANT CODE
 # Inputs:
