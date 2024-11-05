@@ -15,11 +15,13 @@ elif glb.PARAMETERS.exp['language'] == 'Spanish':
 
 # FUNCTION THAT SHOWS THE WELCOME MESSAGE
 def show_welcome():
+    # Print the welcome message with the instructions
     """" Welcome text. See EnglishTxt.py"""
     stim.draw_text(txt.SW_1, Pos=(0, 0), Height=40)
     glb.UI_WIN.flip()
     event.waitKeys(keyList=['return'])
 
+    # Print the begin phase
     """"Let's begin!"""
     stim.draw_text(txt.SW_BEGIN, Height=50, Pos=(0, 0))
     glb.UI_WIN.flip()
@@ -27,16 +29,31 @@ def show_welcome():
 
 
 # FUNCTION TO PROMPT PARTICIPANT TO RATE PARTNER'S TRUSTWORTHINESS
+# Input: 
+#   - PartnerImage: The file name for the partner's image
+#   - PartnerName:  The name for the partner
+#   - EventType:    The type of event
+#   - CpuIndex:     The index of the cpu in the list
+# Returns: 
+#   - Dictionary with the ranking information
 def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuIndex:int):
+    # initialize the ranking trial
     stim.SLIDER.reset()
     response = -1
     responseTime = -1
     partnerImageName = path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage)
+    
+    # mark the start of the ranking
     markEvent(f'{EventType}Start', CpuIndex)
+
+    # Update the window to reflect the ranking
     glb.REL_CLOCK.reset()
     while response==-1:
+        # Draw the photodiode as needed
         if glb.REL_CLOCK.getTime() < glb.PARAMETERS.timing['photodiode']:
             stim.PHOTODIODE.draw()
+
+        # Draw the screen
         stim.draw_image(partnerImageName, Pos=(0, 0.5), Size=(0.6, 0.8))
         """Partner: X"""
         stim.draw_text(f"{txt.STR_PARTNER}{PartnerName}", Height=50, Pos=(0, 0))
@@ -50,7 +67,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         """Trustworthy"""
         stim.draw_text(txt.STR_TRUSTWORTHY, Pos=(0.4, -0.6), Height=40)
         glb.UI_WIN.flip()
-        #added ability to move slider with arrows
+
         # Detecting arrow key input and moving the slider marker position
         keys = event.getKeys(keyList=['return', 'escape', 'left', 'right'])
         for key in keys:
@@ -75,11 +92,14 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
                 stim.SLIDER.markerPos = new_val
 
     if not glb.ABORT:
-        # Respuesta registrada
+        # Draw the feedback
         stim.draw_text(txt.STR_NOTED, Pos=(0, -0.9), Height=60)
         glb.UI_WIN.flip()
 
+        # mark the end of the ranking
         markEvent(f'{EventType}End', CpuIndex)
+
+        # wait after the end
         core.wait(1.5)
 
     return {'type': EventType,
@@ -89,31 +109,6 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
             }
 
 
-# FUNCTION FOR MAIN TRIAL SEQUENCE
-def trust_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
-    GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
-    cpuResponse = "___"
-    returnedAmount = -1
-    markEvent("trialStart", TrialIdx, BlockIdx, 'trust')
-    if UserRole == "trustor":
-        userDecision = trust_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
-        if not glb.ABORT:
-            cpuResponse, returnedAmount = trust_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
-    else:
-        cpuDecision = {"choice": "give", "amount": GameLogic.trustor_decision("give", CpuIndex)}
-        cpuResponse, returnedAmount = trust_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
-        userDecision = trust_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
-    
-    if not glb.ABORT: markEvent("trialEnd", TrialIdx, BlockIdx, 'trust')
-    return {
-        "trial_type": f"Trust-{UserRole}",
-        "response": userDecision['choice'],
-        "partner": f'{PartnerName}-{CpuRole}',
-        "outcome": cpuResponse,
-        "response_time": userDecision['time'],
-        "misc_info": f"${userDecision['fresh_pot']} -> ${returnedAmount}"
-    }
-
 # FUNCTION FOR QUICK TRANSITION FROM RANKING TO START OF THE TRIAL
 def show_game_start_transition():
     """Starting the game. Get ready for the first trial..."""
@@ -121,99 +116,7 @@ def show_game_start_transition():
     glb.UI_WIN.flip()
     core.wait(2)  # Pauses for 3 seconds before starting the game
 
-# FUNCTION TO PROCESS USER'S DECISION
-def trust_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
-    # Initialize a fresh pot for this specific trial
-    freshPot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
-    """ Keep $X"""
-    keepButtonText = f"{txt.TDP_KEEP_BTN}{freshPot}"
-    """Invest $X"""
-    investButtonText = f"{txt.TDP_INVEST_BTN}{freshPot}"
     
-    markEvent("DecisionStart")
-    stim.PHOTODIODE.draw()
-    trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
-    core.wait(glb.PARAMETERS.timing['photodiode'])
-    trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
-    
-    glb.REL_CLOCK.reset()
-    keys = event.waitKeys(keyList=['f', 'j', 'escape'])
-    responseTime = glb.REL_CLOCK.getTime()
-    if 'escape' in keys:
-        decision = 'keep'
-        markEvent("taskAbort")
-        glb.abort()
-    elif 'f' in keys:
-        decision = 'keep'
-        highlight = 1
-    elif 'j' in keys:
-        decision = 'invest'
-        highlight = 2
-
-    if not glb.ABORT:
-        stim.PHOTODIODE.draw()
-        trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText, highlight)
-        core.wait(glb.PARAMETERS.timing['photodiode'])
-        trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText, highlight)
-        core.wait(glb.PARAMETERS.timing['photodiode'])
-        markEvent("DecisionEnd")
-
-    amountInvolved = GameLogic.trustor_decision(decision, CpuIndex)
-
-    return {"choice": decision, "amount": amountInvolved, 'time': responseTime, 'fresh_pot': freshPot}
-
-def trust_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonText, Highlight=None):
-    keepLine = (255,255,255) if Highlight == 1 else (0, 0, 255)
-    investLine = (255,255,255) if Highlight == 2 else (0, 0, 255)
-
-    stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.6, 0.8))
-    """Partner: X"""
-    stim.draw_text(f"{txt.TDD_PARTNER}{PartnerName}", Pos=(0, 0), Height=50)
-    stim.draw_rect(FillColor=(0, 0, 255), LineColor=keepLine, Width=0.65, Height=0.2, Pos=(-0.4, -0.5))
-    stim.draw_text(KeepButtonText, Pos=(-0.4, -0.5), Height=60)
-    stim.draw_rect(FillColor=(0, 0, 255), LineColor=investLine, Width=0.65, Height=0.2, Pos=(0.4, -0.5))
-    stim.draw_text(InvestButtonText, Pos=(0.4, -0.5), Height=60)
-    """Press 'F' to Keep"""
-    stim.draw_text(txt.TDD_KEEP_INSTR, Pos=(-0.4, -0.7), Height=54)
-    """Press 'J' to Invest"""
-    stim.draw_text(txt.TDD_INVEST_INSTR, Pos=(0.4, -0.7), Height=54)
-    glb.UI_WIN.flip()
-
-# FUNCTION TO PROCESS OUTCOME OF THE DECISION
-def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:int):
-    decision = DecisionData["choice"]
-    amountGiven = DecisionData["amount"]
-
-    markEvent("OutcomeStart")
-
-    outcomeMessage = ...
-    outcome = ...
-    returnedAmount = ...
-    if decision == "keep":
-        """You kept $X"""
-        outcomeMessage = f"{txt.TOP_KEPT}{amountGiven}"
-        outcome = 'No Deal'
-        returnedAmount = amountGiven
-    else:
-        returnedAmount = GameLogic.outcome_phase(amountGiven, CpuIndex)
-        """X returned Y.     OR      X kept the money."""
-        outcomeMessage = f"{PartnerName}{txt.TOP_RETURNED}{returnedAmount}" if returnedAmount > 0 else f"{PartnerName}{txt.TOP_STEAL}"
-        outcome = 'Shared' if returnedAmount > 0 else 'Kept'
-    stim.PHOTODIODE.draw()
-    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
-    stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
-    glb.UI_WIN.flip()
-    core.wait(glb.PARAMETERS.timing['photodiode'])
-    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
-    stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
-    glb.UI_WIN.flip()
-
-    markEvent("OutcomeEnd")
-
-    core.wait(1.5)
-    return outcome, returnedAmount
-
-
 # FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
 def show_cumulative_returns(CumulativeReturns, PartnerNames):
     """"End of Block Summary:\n\n"""
@@ -235,8 +138,192 @@ def show_block_transition(BlockNumber):
     glb.UI_WIN.flip()
     event.waitKeys(keyList=['return'], maxWait=20)
 
+
+# FUNCTION FOR TRUST TRIAL SEQUENCE
+# Inputs:
+#   TrialIdx:   The index of the trial within the block
+#   BlockIdx:   The index of the block in the experiment
+#   UserRole:   If the participant is the trustor or the trustee
+#   GameLogic:  The object that dictates how the partner plays
+#   CpuIndex:   The index of the CPU in the list
+#   PartnerImage:   The filename of the picture for the partner
+#   PartnerName:    The name for the partner
+# Returns:
+#   Dictionary with the trial information
+def trust_trial(TrialIdx:int, BlockIdx:int, UserRole:str, CpuRole:str, GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
+    # Initialize the needed variables
+    GameLogic.set_fresh_pot()  # Set the fresh pot once per trial
+    cpuResponse = "___"
+    returnedAmount = -1
+
+    # Mark the start of the trial
+    markEvent("trialStart", TrialIdx, BlockIdx, 'trust')
+
+    # Act depending on whether the participant is the trustor or trustee
+    if UserRole == "trustor":
+        # Run the decision phase and then the outcome phase
+        userDecision = trust_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
+        if not glb.ABORT:
+            cpuResponse, returnedAmount = trust_outcome_phase(userDecision, GameLogic, CpuIndex, PartnerName)
+    else:
+        # Generate an outcome for the CPU, initiate the outcome phase and then the decision phase
+        cpuDecision = {"choice": "give", "amount": GameLogic.trustor_decision("give", CpuIndex)}
+        cpuResponse, returnedAmount = trust_outcome_phase(cpuDecision, GameLogic, CpuIndex, PartnerName)
+        userDecision = trust_decision_phase(GameLogic, CpuIndex, PartnerImage, PartnerName)
+    
+    # If we haven't aborted, mark the end of the trial
+    if not glb.ABORT: markEvent("trialEnd", TrialIdx, BlockIdx, 'trust')
+    
+    return {
+        "trial_type": f"Trust-{UserRole}",
+        "response": userDecision['choice'],
+        "partner": f'{PartnerName}-{CpuRole}',
+        "outcome": cpuResponse,
+        "response_time": userDecision['time'],
+        "misc_info": f"${userDecision['fresh_pot']} -> ${returnedAmount}"
+    }
+
+# FUNCTION TO PROCESS USER'S DECISION
+# Inputs:
+#   GameLogic:  The object that dictates how the partner plays
+#   CpuIndex:   The index of the CPU in the list
+#   PartnerImage:   The filename of the picture for the partner
+#   PartnerName:    The name for the partner
+# Returns: 
+#   Dictionary with the decision outcome
+def trust_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:str):
+    # Initialize a fresh pot for this specific trial
+    freshPot = GameLogic.current_fresh_pot  # Use the set fresh pot for this trial
+    """ Keep $X"""
+    keepButtonText = f"{txt.TDP_KEEP_BTN}{freshPot}"
+    """Invest $X"""
+    investButtonText = f"{txt.TDP_INVEST_BTN}{freshPot}"
+    
+    # Mark the start of the decision phase
+    markEvent("DecisionStart")
+
+    # Draw the prompt with and without the photodiode
+    stim.PHOTODIODE.draw()
+    trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
+    core.wait(glb.PARAMETERS.timing['photodiode'])
+    trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText)
+    
+    # Wait for a key press and record the response time
+    glb.REL_CLOCK.reset()
+    keys = event.waitKeys(keyList=['f', 'j', 'escape'])
+    responseTime = glb.REL_CLOCK.getTime()
+
+    # Interpret the keypresses
+    if 'escape' in keys:
+        decision = 'keep'
+        markEvent("taskAbort")
+        glb.abort()
+    elif 'f' in keys:
+        decision = 'keep'
+        highlight = 1
+    elif 'j' in keys:
+        decision = 'invest'
+        highlight = 2
+
+    # If we haven't aborted, draw a the prompt again (photodiode and not) with the reflected choice being highlighted
+    if not glb.ABORT:
+        stim.PHOTODIODE.draw()
+        trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText, highlight)
+        core.wait(glb.PARAMETERS.timing['photodiode'])
+        trust_decision_draw(PartnerName, PartnerImage, keepButtonText, investButtonText, highlight)
+        core.wait(glb.PARAMETERS.timing['photodiode'])
+        markEvent("DecisionEnd")
+
+    # Save the amount involved
+    amountInvolved = GameLogic.trustor_decision(decision, CpuIndex)
+
+    return {"choice": decision, "amount": amountInvolved, 'time': responseTime, 'fresh_pot': freshPot}
+
+
+# SUBFUCTION FOR TRUST DECISION PHASE TO REDUCE REDUNTANT CODE
+# Inputs:
+#   PartnerName:    The name of the CPU
+#   PartnerImage:   The filename for the CPU's protrait
+#   KeepButtonText: The text for the Keep button
+#   InvestButtonText:   The text for the invest button
+#   Highlight:  Which answer we chose 
+def trust_decision_draw(PartnerName, PartnerImage, KeepButtonText, InvestButtonText, Highlight=None):
+    keepLine = (255,255,255) if Highlight == 1 else (0, 0, 255)
+    investLine = (255,255,255) if Highlight == 2 else (0, 0, 255)
+
+    stim.draw_image(path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage), Pos=(0, 0.5), Size=(0.6, 0.8))
+    """Partner: X"""
+    stim.draw_text(f"{txt.TDD_PARTNER}{PartnerName}", Pos=(0, 0), Height=50)
+    stim.draw_rect(FillColor=(0, 0, 255), LineColor=keepLine, Width=0.65, Height=0.2, Pos=(-0.4, -0.5))
+    stim.draw_text(KeepButtonText, Pos=(-0.4, -0.5), Height=60)
+    stim.draw_rect(FillColor=(0, 0, 255), LineColor=investLine, Width=0.65, Height=0.2, Pos=(0.4, -0.5))
+    stim.draw_text(InvestButtonText, Pos=(0.4, -0.5), Height=60)
+    """Press 'F' to Keep"""
+    stim.draw_text(txt.TDD_KEEP_INSTR, Pos=(-0.4, -0.7), Height=54)
+    """Press 'J' to Invest"""
+    stim.draw_text(txt.TDD_INVEST_INSTR, Pos=(0.4, -0.7), Height=54)
+    glb.UI_WIN.flip()
+
+
+# FUNCTION TO PROCESS OUTCOME OF THE DECISION
+# Inputs:
+#   DecisionData:   The data from the decision phase
+#   GameLogic;      The game logic with which the CPU functions
+#   CpuIndex:       The index of the CPU in the list
+#   PartnerName:    The name for the partner
+# Returns:
+#   outcome:    The CPU's choice based on the participant's choice
+#   returnedAmount: The amount of money the CPU returned
+def trust_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName:int):
+    # Initiate variables
+    decision = DecisionData["choice"]
+    amountGiven = DecisionData["amount"]
+    outcomeMessage = ...
+    outcome = ...
+    returnedAmount = ...
+
+    # mark the start of the outcome phase
+    markEvent("OutcomeStart")
+
+    # If we kept or invested, print the appropriate messages
+    if decision == "keep":
+        """You kept $X"""
+        outcomeMessage = f"{txt.TOP_KEPT}{amountGiven}"
+        outcome = 'No Deal'
+        returnedAmount = amountGiven
+    else:
+        returnedAmount = GameLogic.outcome_phase(amountGiven, CpuIndex)
+        """X returned Y.     OR      X kept the money."""
+        outcomeMessage = f"{PartnerName}{txt.TOP_RETURNED}{returnedAmount}" if returnedAmount > 0 else f"{PartnerName}{txt.TOP_STEAL}"
+        outcome = 'Shared' if returnedAmount > 0 else 'Kept'
+
+    # Draw the outcome with and without the photodiode
+    stim.PHOTODIODE.draw()
+    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
+    stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
+    glb.UI_WIN.flip()
+    core.wait(glb.PARAMETERS.timing['photodiode'])
+    stim.draw_rect(FillColor=(0, 0, 255), Width=1, Height=0.4, Pos=(0, 0))
+    stim.draw_text(outcomeMessage, Pos=(0, 0), Height=80)
+    glb.UI_WIN.flip()
+
+    # mark the end of the outcome phase
+    markEvent("OutcomeEnd")
+
+    # Wait
+    core.wait(1.5)
+    return outcome, returnedAmount
+
+
 # FUNCTION USED TO SIMULATE A LOTTERY TRIAL
+# Inputs:   
+#   PartnerNames: The names of all the Partners
+#   TrialIdx:   The index of the trial within the block
+#   BlockIdx:   The index of the block in the experiment
+# Returns:  
+#   Dictionary with the trial information
 def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
+    # Initialize some variables
     suggestionPartner = random.choice(PartnerNames)
     """You decide whether or not to win the lottery"""
     suggestionText = txt.LT_SUGGESTION
@@ -245,15 +332,18 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     """Invest $X for a chance to win 10x!"""
     lottery_info_text = f"{txt.LT_INFO_1}{investment_amount} {txt.LT_INFO_2}"
 
+    # Mark the start of the trial and the decision phase
     markEvent("trialStart", TrialIdx, BlockIdx, 'lottery')
     markEvent("DecisionStart")
 
+    # Draw the prompt with and without the photodiode and measure the response time
     stim.PHOTODIODE.draw()
     lot_decision_draw(lottery_info_text)   
     core.wait(glb.PARAMETERS.timing['photodiode'])
     lot_decision_draw(lottery_info_text)     
     glb.REL_CLOCK.reset()         
 
+    # Capture the response time  and the choice and create the appropriate outcome
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
     responseTime = glb.REL_CLOCK.getTime()
     outcomeMessage = 'ABORT'
@@ -276,17 +366,21 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         outcome = "Not Played"
         """You chose not to play the lottery"""
         outcomeMessage = txt.LT_QUIT
-    
+
+    # If we have not aborted: Draw the prompt again with the highlighted response and then the outcome
     if not glb.ABORT:
+        # Prompt again
         stim.PHOTODIODE.draw()
         lot_decision_draw(lottery_info_text, highlight)   
         core.wait(glb.PARAMETERS.timing['photodiode'])
         lot_decision_draw(lottery_info_text, highlight)  
         core.wait(glb.PARAMETERS.timing['photodiode'])
 
+        # mark end of decision and start of outcome
         markEvent("DecisionEnd")
         markEvent("OutcomeStart")
 
+        # Draw Outcome with and without photodiode
         stim.PHOTODIODE.draw()
         stim.draw_rect(FillColor=(0,0,255), Width=0.9, Height=0.4, Pos=(0,0))
         stim.draw_text(outcomeMessage, Height=54)
@@ -296,6 +390,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
         stim.draw_text(outcomeMessage, Height=54)
         glb.UI_WIN.flip()
 
+        # mark end of outcome and trial as well
         markEvent("OutcomeEnd")
         markEvent("trialEnd", TrialIdx, BlockIdx, 'lottery')
 
@@ -304,6 +399,10 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
     return {"trial_type": "Lottery", "response": response, "partner": suggestionPartner, 
             "misc_info": suggestionText, "outcome": outcome, 'response_time': responseTime}
 
+# SUBFUCTION FOR LOTTERY DECISION PHASE TO REDUCE REDUNTANT CODE
+# Inputs:
+#   SuggestionText: The text we use to suggest
+#   Highlight:  Which answer we chose 
 def lot_decision_draw(SuggestionText, Highlight=None):
     yesLine = (255,255,255) if Highlight == 1 else (0, 0, 255)
     noLine = (255,255,255) if Highlight == 2 else (0, 0, 255)
