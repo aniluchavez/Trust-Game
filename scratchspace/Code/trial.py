@@ -211,7 +211,20 @@ def normal_outcome_phase(DecisionData:dict, GameLogic, CpuIndex:int, PartnerName
 
     core.wait(2)
     return outcome
-# FUNCTION FOR BLOCK TRANSITIONS
+# FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
+# FUNCTION FOR BLOCK TRANSITIONS and SUMMARIES
+def show_cumulative_returns(cumulative_returns, partner_names):
+    """Display cumulative returns for each partner at the end of a block."""
+    return_text = "End of Block Summary:\n\n"
+    for cpu_index, total_returned in cumulative_returns.items():
+        partner_name = partner_names.get(cpu_index, f"Partner {cpu_index}")
+        return_text += f"{partner_name} returned a total of ${total_returned}\n"
+    
+    stim.draw_text(return_text, Pos=(0, 0), Height=70)
+    glb.UI_WIN.flip()
+    core.wait(4)  # Show summary for 4 seconds
+ # Show summary for 4 seconds
+
 def show_block_transition(block_number):
     """Display end of block message and indicate the start of the next block."""
     transition_text = f"End of Block {block_number}\n\nStarting Block {block_number + 1}...\n\nPress 'Enter' to continue."

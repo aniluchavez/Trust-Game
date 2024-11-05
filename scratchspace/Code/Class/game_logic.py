@@ -25,7 +25,8 @@ class GameLogic:
     def __init__(self, cpu_configs, initial_money=1, user_role="trustor"):
         self.initial_money = initial_money
         self.user_role = user_role
-        self.trustor_balances = {i: 0 for i in range(len(cpu_configs))}  # Track cumulative returns per partner
+        self.trustor_balances = {i: 0 for i in range(len(cpu_configs))}  # Track cumulative gains per partner
+        self.cumulative_returns = {i: 0 for i in range(len(cpu_configs))}  # Track returns per block per partner
         self.cpus = [CPU(config['trustworthiness'], config.get('weights'), initial_money) for config in cpu_configs]
         self.current_fresh_pot = None  # Fixed fresh pot for the current trial
 
@@ -43,13 +44,23 @@ class GameLogic:
             return self.current_fresh_pot  # Keep only the fresh pot
 
     def outcome_phase(self, tripled_investment, cpu_index):
+        """Simulate the outcome phase and record the returned amount."""
         returned_amount = 0
         if tripled_investment > 0:
             cpu = self.cpus[cpu_index]
             returned_amount = cpu.decide_return(tripled_investment)
-            self.trustor_balances[cpu_index] += returned_amount  # Add to cumulative gain for this partner
-
+            self.trustor_balances[cpu_index] += returned_amount  # Track overall gains per partner
+            self.cumulative_returns[cpu_index] += returned_amount  # Track cumulative returns for current block
+            
             print(f"Trial with Partner {cpu_index} - Tripled Investment: {tripled_investment}, Returned: {returned_amount}, "
                   f"Total Gains from Partner {cpu_index}: {self.trustor_balances[cpu_index]}")
         
         return returned_amount
+
+    def get_cumulative_returns(self):
+        """Return cumulative amounts returned by each partner for the current block."""
+        return self.cumulative_returns
+
+    def reset_cumulative_returns(self):
+        """Reset cumulative returns for a new block."""
+        self.cumulative_returns = {index: 0 for index in self.cumulative_returns}

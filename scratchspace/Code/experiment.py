@@ -16,6 +16,9 @@ def run_experiment():
 
     # Show welcome screen
     trial.show_welcome()
+    trial.show_game_start_transition()
+    # Transition to first trial 
+    
     
     # Experiment structure from parameters
     numBlocks, numTrialsPerBlock = glb.PARAMETERS.get_block_info()
@@ -24,6 +27,8 @@ def run_experiment():
 
     # Generate partner images only once, as partners are the same across blocks
     partnerImages = {partner['name']: partner['image'] for partner in partners}
+    partnerNames = {index: partner['name'] for index, partner in enumerate(partners)}
+
 
     # Loop through each block
     for blockIdx in range(numBlocks):
@@ -41,7 +46,8 @@ def run_experiment():
                 allRankings.append(formatedData)
 
         if not glb.ABORT:
-            trial.show_game_start_transition()
+            gameLogic.reset_cumulative_returns()
+        
             # Generate the trial types for the current block
             interleaved_trials = glb.PARAMETERS.get_interleaved_trial_types(numTrialsPerBlock, blockIdx)
             print(f"Block {blockIdx + 1} trial types:", interleaved_trials)  # Debug statement
@@ -66,6 +72,9 @@ def run_experiment():
                 if glb.ABORT: break
 
         if not glb.ABORT:
+            cumulative_returns = gameLogic.get_cumulative_returns()
+            trial.show_cumulative_returns(cumulative_returns, partnerNames)
+
             # Collect final ratings at the end of Block 10
             if blockIdx == 9:  # End of Block 10
                 for cpuIndex, partnerConfig in enumerate(partners):
@@ -74,12 +83,12 @@ def run_experiment():
                     blockRankings.append(formatedData)
                     allRankings.append(formatedData)
 
-        blockTrialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
-        blockTrialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
+        # blockTrialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+        # blockTrialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
         
-        if len(blockRankings) > 0:
-            blockRankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
-            blockRankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
+        # if len(blockRankings) > 0:
+        #     blockRankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+        #     blockRankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
         
         if glb.ABORT: break
         if blockIdx < numBlocks - 1 and not glb.ABORT:
@@ -87,14 +96,14 @@ def run_experiment():
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
-    trialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
-    trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
+    # trialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+    # trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
 
-    rankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
-    rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
+    # rankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+    # rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
 
-    eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
-    eventDataFrame.to_excel(glb.PARAMETERS.outputDir+f'Event Data.xlsx')
+    # eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
+    # eventDataFrame.to_excel(glb.PARAMETERS.outputDir+f'Event Data.xlsx')
 
     #save_data(allData)
     glb.UI_WIN.close()

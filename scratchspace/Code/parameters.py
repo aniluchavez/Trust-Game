@@ -52,9 +52,9 @@ class Parameters:
             {"name": "Alex Smith", "image": "CFD-MM-321-021-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
             {"name": "Taylor Reed", "image": "CFD-MF-306-003-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
         ]
-        self.outputDir=''
-        self.ID={}
-        self.__launch_ID_UI()
+        # self.outputDir=''
+        # self.ID={}
+        # self.__launch_ID_UI()
 
         # Size computation for text based on screen settings
         # self.text.update({'sizeCM': self.text['size']*0.0352777778})
