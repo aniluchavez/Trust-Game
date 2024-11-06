@@ -46,8 +46,10 @@ def markEvent(EventType: str, *args, **kwargs):
 
         case "DecisionStart":
             eventName = "Decision Phase Started"
+        case "DecisionMade":
+            eventName = "Decision was entered"
         case "DecisionEnd":
-            eventName = f"Decision Phase Ended"
+            eventName = "Decision Phase Ended"
         case "OutcomeStart":
             eventName = "Outcome Phase Started"
         case "OutcomeEnd":
@@ -65,6 +67,8 @@ def markEvent(EventType: str, *args, **kwargs):
             eventName = f"Late Trust Ranking Started for CPU {args[0]}"
         case "TrustRankFinalEnd":
             eventName = f"Late Trust Ranking Ended for CPU {args[0]}"
+        case "RankingMade":
+            eventName = "Ranking was entered"
 
         case _:
             eventName = "UNKNOWN EVENT"

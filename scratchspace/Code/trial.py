@@ -73,6 +73,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         keys = event.getKeys(keyList=['return', 'escape', 'left', 'right'])
         for key in keys:
             if key == 'return':
+                markEvent("RankingMade")
                 responseTime = glb.REL_CLOCK.getTime()
                 if stim.SLIDER.getRating() != None:
                     response = stim.SLIDER.getRating()
@@ -230,6 +231,7 @@ def trust_decision_phase(GameLogic, CpuIndex:int, PartnerImage:str, PartnerName:
     # Wait for a key press and record the response time
     glb.REL_CLOCK.reset()
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
+    markEvent("DecisionMade")
     responseTime = glb.REL_CLOCK.getTime()
 
     # Interpret the keypresses
@@ -365,6 +367,7 @@ def lottery_trial(PartnerNames:str, TrialIdx, BlockIdx):
 
     # Capture the response time  and the choice and create the appropriate outcome
     keys = event.waitKeys(keyList=['f', 'j', 'escape'])
+    markEvent("DecisionMade")
     responseTime = glb.REL_CLOCK.getTime()
     outcomeMessage = 'ABORT'
     outcome = 'ABORT'
