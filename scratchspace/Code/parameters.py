@@ -49,9 +49,9 @@ class Parameters:
 
         # CPU partner configuration - consistent across all blocks
         self.partners = [
-            {"name": "Kendall Christie", "image": "CFD-MF-300-002-N.jpg", "trustworthiness": "trustworthy", "weights": self.trustworthy_weights},
-            {"name": "Alex Smith", "image": "CFD-MM-321-021-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
-            {"name": "Taylor Reed", "image": "CFD-MF-306-003-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
+            {"name": "Riley Pinto ", "image": "CFD-MM-313-002-N.jpg", "trustworthiness": "trustworthy", "weights": self.trustworthy_weights},
+            {"name": "Jasmine Acosta", "image": "CFD-MF-302-027-N.jpg", "trustworthiness": "untrustworthy", "weights": self.untrustworthy_weights},
+            {"name": "Ana Rodriguez", "image": "CFD-MF-319-016-N.jpg", "trustworthiness": "neutral", "weights": None}  # Neutral partner, no weights
         ]
         self.outputDir=''
         self.ID={}
