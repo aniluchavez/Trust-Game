@@ -40,6 +40,7 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
     # initialize the ranking trial
     stim.SLIDER.reset()
     response = -1
+    ratingBackup = None
     responseTime = -1
     partnerImageName = path.join(glb.PARAMETERS.stimuli['imageFolder'], PartnerImage)
     
@@ -73,7 +74,13 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
         for key in keys:
             if key == 'return':
                 responseTime = glb.REL_CLOCK.getTime()
-                response = stim.SLIDER.getRating() or 5
+                if stim.SLIDER.getRating() != None:
+                    response = stim.SLIDER.getRating()
+                elif ratingBackup != None:
+                    print("ratingBackup")
+                    response = ratingBackup
+                else:
+                    print("odd calcs")
             elif key == 'escape':
                 glb.abort()
                 response = -2
@@ -82,25 +89,34 @@ def show_trust_ranking(PartnerImage:str, PartnerName:str, EventType:str, CpuInde
                 # Initialize markerPos to a default value if it's None
                 if stim.SLIDER.markerPos is None:
                     stim.SLIDER.markerPos = stim.SLIDER.ticks[0]
-                new_val = max(stim.SLIDER.markerPos - 1, stim.SLIDER.ticks[0])  # Ensures we stay within the min tick
-                stim.SLIDER.markerPos = new_val
+                newVal = max(stim.SLIDER.markerPos - 1, stim.SLIDER.ticks[0])  # Ensures we stay within the min tick
+                stim.SLIDER.markerPos = newVal
+                stim.SLIDER.recordRating(newVal)
+                ratingBackup = newVal
             elif key == 'right':
                 # Initialize markerPos to a default value if it's None
                 if stim.SLIDER.markerPos is None:
                     stim.SLIDER.markerPos = stim.SLIDER.ticks[0]
-                new_val = min(stim.SLIDER.markerPos + 1, stim.SLIDER.ticks[-1])  # Ensures we stay within the max tick
-                stim.SLIDER.markerPos = new_val
+                newVal = min(stim.SLIDER.markerPos + 1, stim.SLIDER.ticks[-1])  # Ensures we stay within the max tick
+                stim.SLIDER.markerPos = newVal
+                stim.SLIDER.recordRating(newVal)
+                ratingBackup = newVal
 
     if not glb.ABORT:
-        # Draw the feedback
+        # Draw the feedback wth photodiode
+        stim.draw_text(txt.STR_NOTED, Pos=(0, -0.9), Height=60)
+        stim.PHOTODIODE.draw()
+        glb.UI_WIN.flip()
+        core.wait(glb.PARAMETERS.timing['photodiode'])
         stim.draw_text(txt.STR_NOTED, Pos=(0, -0.9), Height=60)
         glb.UI_WIN.flip()
+
 
         # mark the end of the ranking
         markEvent(f'{EventType}End', CpuIndex)
 
         # wait after the end
-        core.wait(1.5)
+        core.wait(1.5 - glb.PARAMETERS.timing['photodiode'])
 
     return {'type': EventType,
             'partner': PartnerName,

@@ -142,6 +142,8 @@ def run_practice_trials(gameLogic, partnerImages, partners):
             )
         trialData["blockIdx"] = -1
         practiceTrials.append(format_data('Trial', trialData))
+        if glb.ABORT: break
+        
     return practiceTrials
 
 
