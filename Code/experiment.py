@@ -8,33 +8,31 @@ from Code.Class.game_logic import GameLogic
 
 
 def run_experiment():
+    # Initialize the storing of results
     allTrials = []
     allRankings = []
-    midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
     blockProfits = [0 for i in range(glb.PARAMETERS.exp['numBlocks'])]
+        
+    # Experiment structure from parameters
+    numBlocks = glb.PARAMETERS.exp['numBlocks'] # Retrieve the number of blocks
+    partners = glb.PARAMETERS.partners          # Retrieve the consistent partners list
+    gameLogic = GameLogic(partners)             # Initialize GameLogic once for consistent partners
+    midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
 
     markEvent("taskStart")
 
     # Show welcome screen
     trial.show_welcome()
-    
-    # Transition to first trial 
-    
-    
-    # Experiment structure from parameters
-    numBlocks, numTrialsPerBlock = glb.PARAMETERS.get_block_info()
-    partners = glb.PARAMETERS.partners  # Retrieve the consistent partners list
-    gameLogic = GameLogic(partners)     # Initialize GameLogic once for consistent partners
 
     # Generate partner images only once, as partners are the same across blocks
     partnerImages = {partner['name']: partner['image'] for partner in partners}
     partnerNames = {index: partner['name'] for index, partner in enumerate(partners)}
 
-
     # Loop through each block
     for blockIdx in range(numBlocks):
         blockTrials = []
         blockRankings = []
+
         # Collect ratings at the start of Block 1, Block 5, and the end of Block 10
         if blockIdx == 0 or blockIdx == midBlock:  # Start of Block 1 or Block 5
             for cpuIndex, partnerConfig in enumerate(partners):
@@ -46,7 +44,7 @@ def run_experiment():
                 blockRankings.append(formatedData)
                 allRankings.append(formatedData)
 
-               
+        # At the first block run the practice trials
         if blockIdx == 0:
             practiceTrials = run_practice_trials(gameLogic, partnerImages, partners)
             allTrials.extend(practiceTrials)
@@ -63,7 +61,6 @@ def run_experiment():
             for trialIdx, trialType in enumerate(interleavedTrials):
                 trialData = ...
                 if trialType != -1:
-                    # cpuIndex, partnerConfig = random.choice(list(enumerate(partners)))
                     partnerConfig = partners[trialType]
                     trialData= trial.trust_trial(trialIdx, blockIdx, "trustor", "trustee", gameLogic, trialType, 
                                                    partnerImages[partnerConfig["name"]], partnerConfig["name"])
@@ -90,6 +87,7 @@ def run_experiment():
                     blockRankings.append(formatedData)
                     allRankings.append(formatedData)
 
+        # Save the data for each block
         blockTrialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
         blockTrialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
         
@@ -100,6 +98,7 @@ def run_experiment():
         if glb.ABORT: break
         if blockIdx < numBlocks - 1 and not glb.ABORT:
             trial.show_block_transition(blockIdx + 1)
+            
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
