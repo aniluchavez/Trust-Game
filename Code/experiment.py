@@ -1,5 +1,5 @@
 import random, math
-import pandas as pd
+from pandas import DataFrame
 
 import Code.globals as glb
 import Code.trial as trial
@@ -89,11 +89,11 @@ def run_experiment():
                     allRankings.append(formatedData)
 
         # Save the data for each block
-        blockTrialsDataFrame = pd.DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+        blockTrialsDataFrame = DataFrame(blockTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
         blockTrialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockTrials_{blockIdx+1}.xlsx')
         
         if len(blockRankings) > 0:
-            blockRankingsDataFrame = pd.DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+            blockRankingsDataFrame = DataFrame(blockRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
             blockRankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'BlockRankings_{blockIdx+1}.xlsx')
         
         if glb.ABORT: break
@@ -103,13 +103,13 @@ def run_experiment():
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
-    trialsDataFrame = pd.DataFrame(allTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
+    trialsDataFrame = DataFrame(allTrials, columns=["Trial Type", "Block", "User Response", "Partner Name", "Trial Outcome", "Response Time", "Misc"])
     trialsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllTrials.xlsx')
 
-    rankingsDataFrame = pd.DataFrame(allRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
+    rankingsDataFrame = DataFrame(allRankings, columns=["Ranking Type", "Partner Name", "User Ranking", "Response Time"])
     rankingsDataFrame.to_excel(glb.PARAMETERS.outputDir+f'AllRankings.xlsx')
 
-    eventDataFrame = pd.DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
+    eventDataFrame = DataFrame(glb.EVENTS, columns=["Event Name", "Event Time"])
     eventDataFrame.to_excel(glb.PARAMETERS.outputDir+f'Event Data.xlsx')
 
     #save_data(allData)

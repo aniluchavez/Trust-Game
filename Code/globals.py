@@ -25,9 +25,10 @@ if PARAMETERS.ID['expEnv'] == "BCM-EMU":
     PARAMETERS.ID.update({'emuRunNum': emuRunNum})                              # Save the emu run number in the emu parameters
     PARAMETERS.ID['name'] = logEntry[1]                                         # Save the EMU codename as the patient's ID
 PARAMETERS.generate_output_dest()
+PARAMETERS.save()
+
 
 # Set up experiment settings
-EXPERIMENT_NAME = "Trust Game Experiment"
 DATA_PATH = os.path.join(os.getcwd(), "data")
 if not os.path.exists(DATA_PATH):
     os.makedirs(DATA_PATH)

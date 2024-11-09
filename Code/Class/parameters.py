@@ -1,5 +1,5 @@
 import random, os
-from numpy.random import randint
+from pandas import DataFrame, ExcelWriter
 from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, messagebox as tkm
@@ -57,7 +57,7 @@ class Parameters:
         self.outputDir=''           # Initialize the directory name
         self.ID={}                  # Initialize the ID 
         self.__launch_ID_UI()       # Launch the UI that generates the ID
-        
+
 
     # GENERATES A LIST OF TRIAL TYPES PER BLOCK. 1ST BLOCK HAS DELAYED LOTTERY TRIALS
     def get_interleaved_trial_types(self, block_idx):
@@ -104,6 +104,28 @@ class Parameters:
     
         self.outputDir = outputDir + f'/{expName}__{idName}_{now}/'
         if not os.path.exists(self.outputDir): os.mkdir(self.outputDir)
+
+
+    # SAVES THE PARAMETERS
+    def save(self):
+        columnData = ["Item", "Value"]
+
+        screenData = [(key,str(value)) for key, value in self.screen.items()]
+        screenData.extend([(key, str(value)) for key, value in self.window.items()])
+        screenDataFrame = DataFrame(screenData, columns=columnData)
+
+        expData = [(key,str(value)) for key, value in self.exp.items()]
+        expData.extend([(f'{key} dur', str(value)) for key, value in self.window.items()])
+        expDataFrame = DataFrame(expData, columns=columnData)
+
+        partnerData = [(partner['name'], partner['image'], partner['trustworthiness']) for partner in self.partners]
+        partnerDataFrame = DataFrame(partnerData, columns=['name', 'image', 'trustworthiness'])
+
+        with ExcelWriter(f'{self.outputDir}Parameters.xlsx') as writer:
+            screenDataFrame.to_excel(writer, sheet_name="Screen Settings")
+            expDataFrame.to_excel(writer, sheet_name="Experiment General")
+            partnerDataFrame.to_excel(writer, sheet_name="Partner Info")
+
     
 
     # GUI FOR GETTING THE PARTICIPANT'S ID
