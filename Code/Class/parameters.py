@@ -22,7 +22,6 @@ class Parameters:
         self.exp = {
             'name'     : "TrustGame",   # A name for the task to be used in filenames
             'numBlocks': 10,            # Number of blocks in the experiment
-            # 'outputDir': 'data',        # Output directory for saving data
             'trialsPerBlock': 12,       # The number of trials in each block
             'language': 'English'       # The language to be used
         }
@@ -58,52 +57,34 @@ class Parameters:
         self.outputDir=''           # Initialize the directory name
         self.ID={}                  # Initialize the ID 
         self.__launch_ID_UI()       # Launch the UI that generates the ID
-
-
-    # RETURNS THE NUMBER OF BLOCKS AND TRIALS PER BLOCK
-    def get_block_info(self):
-        return self.exp['numBlocks'], self.exp['trialsPerBlock'] #self.block['numTrials']
-
+        
 
     # GENERATES A LIST OF TRIAL TYPES PER BLOCK. 1ST BLOCK HAS DELAYED LOTTERY TRIALS
     def get_interleaved_trial_types(self, block_idx):
+        # Generating variables for code readability
         numPartners = len(self.partners)
         trialsPerBlock = self.exp['trialsPerBlock']
+        
+        # Carry out first block functions separately
         if block_idx == 0:
+            # Generate a list of all possible partners, expand it to half the trials of the block and randomize it
             firstHalf = list(range(numPartners)) * int(trialsPerBlock / (2*numPartners) )
             random.shuffle(firstHalf)
+
+            # Generate a list of all lottery trials with the remainder of the trust trials and randomize it
             secondHalf = ([-1] * int(trialsPerBlock/4)) + list(range(numPartners)) * int(trialsPerBlock / (4*numPartners) )
             random.shuffle(secondHalf)
-            return firstHalf + secondHalf
+            return firstHalf + secondHalf # Return the concatenation of the 2 lists
+        
         else:
-            options = list(range(numPartners))
-            options.append(-1)
+            # Generate a list of all partners and the lottery, expand it, and randomize it
+            options = list(range(-1,numPartners))
             options *= int(trialsPerBlock /  (numPartners+1) )
             random.shuffle(options)
             return options
 
-    
-    # def get_selected_partners(self, num_partners=2):
-    #     """Return the first `num_partners` partners in each block for simplicity."""
-    #     return {
-    #         "partners": self.partners[:num_partners],
-    #         "num_trials_per_partner": self.block['numTrials'] // len(self.partners)
-    #     }
-    
-    # def show_exp_info(self):
-    #     """Shows a dialog box for collecting participant information."""
-    #     expInfo = {
-    #         'participant': f"{randint(0, 999999):06.0f}",
-    #         'session': '001',
-    #         'date': data.getDateStr(),
-    #         'expName': 'trust_game',
-    #         'psychopyVersion': '2024.2.1',
-    #     }
-    #     dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expInfo['expName'], alwaysOnTop=True)
-    #     if not dlg.OK:
-    #         core.quit()  # Exit if user cancels the dialog
-    #     return expInfo
-    
+
+    # FUNCTION THAT GENERATES AN OUTPUT DESTINATION BASED ON THE EXPERIMENT NAME, ID AND TIME
     def generate_output_dest(self):
         # Generate dynamic strings
         now:str = datetime.now().strftime("%Y%m%d_%H%M") 
@@ -125,6 +106,7 @@ class Parameters:
         if not os.path.exists(self.outputDir): os.mkdir(self.outputDir)
     
 
+    # GUI FOR GETTING THE PARTICIPANT'S ID
     def __launch_ID_UI(self):
         idUI = tk.Tk() 
         idUI.title('ID specifications')

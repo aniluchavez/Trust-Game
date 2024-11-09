@@ -18,6 +18,7 @@ def run_experiment():
     partners = glb.PARAMETERS.partners          # Retrieve the consistent partners list
     gameLogic = GameLogic(partners)             # Initialize GameLogic once for consistent partners
     midBlock = math.floor( (glb.PARAMETERS.exp['numBlocks']-1)/2 )
+    interleavedTrials = [glb.PARAMETERS.get_interleaved_trial_types(i) for i in range(numBlocks)]
 
     markEvent("taskStart")
 
@@ -53,12 +54,12 @@ def run_experiment():
         if not glb.ABORT:
             gameLogic.reset_cumulative_returns()
         
-            # Generate the trial types for the current block
-            interleavedTrials = glb.PARAMETERS.get_interleaved_trial_types(blockIdx)
-            print(f"Block {blockIdx + 1} trial types:", interleavedTrials)  # Debug statement
+            # Get the trial types for the current block
+            blockTrials = interleavedTrials[blockIdx]
+            print(f"Block {blockIdx + 1} trial types:", blockTrials)  # Debug statement
             
             # Run each trial based on the interleaved structure
-            for trialIdx, trialType in enumerate(interleavedTrials):
+            for trialIdx, trialType in enumerate(blockTrials):
                 trialData = ...
                 if trialType != -1:
                     partnerConfig = partners[trialType]
@@ -98,7 +99,7 @@ def run_experiment():
         if glb.ABORT: break
         if blockIdx < numBlocks - 1 and not glb.ABORT:
             trial.show_block_transition(blockIdx + 1)
-            
+
     # Mark the end of the experiment and save data
     if not glb.ABORT: markEvent("taskStop", PARAMETERS=glb.PARAMETERS)
     
